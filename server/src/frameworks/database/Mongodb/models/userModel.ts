@@ -49,6 +49,18 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
    
 
     report:[]

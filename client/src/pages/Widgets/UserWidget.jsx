@@ -35,11 +35,11 @@ const UserWidget= ( { userId,userData,isProfile=false,handleEffect}) =>{
     // const user = useSelector((state) => state.user);
     const [user,setUser]=useState(null)
     const dark=palette.neutral.dark;
-    const medium=palette.neutal.medium;
+    const medium=palette.neutral.medium;
     const main=palette.neutral.main
       const following=useSelector((state)=>state.user.following)
 const getUser= async () =>{
-    const response=await fetch(`http://ocalhost:5000/user/${userId}`,
+    const response=await fetch(`http://localhost:5000/api/user/${userId}`,
     {
         method: "GET",
         headers : {Authorization:`Bearer ${token}`}
@@ -48,13 +48,15 @@ const getUser= async () =>{
     const data=await response.json()
     console.log("data")
     console.log(data)
-    setUser(data)
+    setUser(data.user)
 }
 
 useEffect(()=>{
     getUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
 },[])
+
+
 
 if(!user)
 return null
@@ -66,24 +68,18 @@ const{
     email,password
 } =user
 
-return(
-    // <WidgetWrapper>
-    //   <FlexBetween
-    //   gap=".5rem"
-    //   pb="1.1rem"
-    //   onClick={()=>navigate(`/profile/${userId}`)}
 
-    //   >
-    //     <FlexBetween></FlexBetween>
-    //     </FlexBetween>  
-    // </WidgetWrapper>
+console.log("user widget page");
+console.log(name, userName, age, email);
+return(
+    
 
     <WidgetWrapper>
     <FlexBetween gap='0.5rem' pb='1.1rem'>
       <FlexBetween gap='1rem' onClick={() => navigate(`/profile/${userId}`)}>
-        <UserImage
+        {/* <UserImage
           image={ user.displayPicture}
-        />
+        /> */}
         <Box>
           <Typography
             variant='h4'
@@ -218,13 +214,13 @@ return(
               startIcon={<ReportOutlined />}
               
             >
-              {reported ? "Already Reported" : "Report"}
+             Reported?
             </Button>
           </Box>
         </Box>
       </>
     )}
-    <Dialog open={openReportDialog} onClose={handleCloseReportDialog}>
+    <Dialog  >
       <DialogTitle>Report User</DialogTitle>
       <DialogContent>
         <TextField
@@ -233,20 +229,18 @@ return(
           rows={4}
           variant='outlined'
           label='Reason for Reporting'
-          value={reportReason}
-          onChange={handleReportReasonChange}
+          
+          
           fullWidth
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseReportDialog}>Cancel</Button>
+        <Button >Cancel</Button>
         <Button
-          onClick={() => {
-            handleReportSubmit(userData ? userData._id : user._id);
-          }}
+          
           variant='contained'
           color='primary'
-          disabled={reportReason.trim() === ""}
+         
         >
           Submit
         </Button>

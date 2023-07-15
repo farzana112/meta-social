@@ -1,6 +1,6 @@
 // import './App.css'
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Home/Home.jsx";
+import Home from "./pages/Home/Home.jsx";
 import Login from "./pages/Login/Login";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -35,7 +35,7 @@ function App() {
             />
             <Route
               path="/home"
-              element={token ? <HomePage /> : <Navigate to="../auth" />}
+              element={token ? <Home /> : <Navigate to="../auth" />}
             />
             <Route
               path="/auth"

@@ -7,6 +7,8 @@ const initialState={
     adminToken:null,
     admin:null,
     posts:[],
+    followers:[],
+    following:[]
 
 };
 export const authSlice = createSlice({
@@ -57,6 +59,11 @@ export const authSlice = createSlice({
             state.posts=updatedPosts
         },
 
+        setUpdatePost: (state, action) => {
+
+            state.posts.shift(action.payload.posts)
+        },
+
         setFollowing: (state, action) => {
             if (state.user) {
                 state.user.following = action.payload.following;
@@ -76,12 +83,26 @@ export const authSlice = createSlice({
             }
         },
         
-
+        setFriendFollowers: (state, action) => {
+            state.friendFollowers = action.payload?.followers;
+        },
+        setUpdateFriendFollowers: (state, action) => {
+            // state.friendFollowers = action.payload?.followers;
+            console.log(state.friendFollowers, "><><><<>");
+        },
+        setFriendFollowing: (state, action) => {
+            state.friendFollowing = action.payload?.following;
+        },
+        
+        deleteUpdate: (state, action) => {
+            const postId = action.payload;
+            state.posts = state.posts.filter((post) => post._id !== postId);
+        },
         
     },
   });
 
-export const {setMode,setLogin,setLogout,setAdminLogin,setAdminLogout,setPost,setPosts,setFolowing,setFollowers}=authSlice.actions
+export const {setMode,setLogin,setLogout,setAdminLogin,setAdminLogout,setPost,setPosts,setFollowing,setFollowers,setUpdatePost,setFriendFollowers,deleteUpdate,setUpdateFriendFollowers}=authSlice.actions
 
 export default authSlice.reducer;
 

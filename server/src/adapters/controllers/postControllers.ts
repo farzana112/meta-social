@@ -5,7 +5,7 @@ import { postDbInterfaceType } from "../../application/repositories/postDbReposi
 import { UserDbInterface } from "../../application/repositories/userDbRepository"
 import { UserRepositoryMongoDB, userRepositoryMongoDB } from "../../frameworks/database/Mongodb/repositories/userRepository"
 import {
-    postCreate,getAllPosts
+    postCreate,getAllPosts,getUserPosts,postDelete, postEdit , addComment,deleteComment
 } from "../../application/useCases/post/post"
 const postController = (
     postDbInterface:postDbInterfaceType,
@@ -46,11 +46,67 @@ const postController = (
     })
   })
 
-  
+  const getUserPost = asyncHandler ( async (req:Request, res: Response) => {
+    const {userId} = req.params
+    const posts = await getUserPosts(userId, dbRepositoryPost)
+    res.json({
+      status : "success",
+      posts
+    })
+  })
+
+  const deletePost = asyncHandler( async (req:Request, res: Response) => {
+    const {id} = req.params
+    const post = await postDelete(id, dbRepositoryPost)
+    res.json({
+      status : "success",
+      message: "Successfully post deleted",
+      post
+    })
+  })
+
+  const editPost = asyncHandler( async (req: Request, res: Response) => {
+    const{postId} = req.params
+    const {description} = req.body
+    const editedPost = await postEdit(postId,description,dbRepositoryPost)
+    res.json({
+      status: "success",
+      message: "Post Edited ",
+      editedPost
+    })
+  })
+
+  const commentPost = asyncHandler( async (req: Request, res: Response) => {
+    const{postId} = req.params
+    const {userId,comment} = req.body
+    const commentAdded = await addComment(postId,userId,comment,dbRepositoryPost)
+    res.json({
+      status: "success",
+      message: "Successfully commentAdded",
+      commentAdded
+    })
+  })
+
+  const commentDelete = asyncHandler( async (req: Request, res: Response) => {
+    const{postId} = req.params
+    const {userId,index} = req.body
+    const deletedComment = await deleteComment(postId,userId,index,dbRepositoryPost)
+    res.json({
+      status: "success",
+      message: "Comment Deleted",
+      deletedComment
+    })
+  })
 return{
 
      createPost,
-     getPosts
+     getPosts,
+     getUserPost,
+     deletePost,
+     editPost,
+     commentPost,
+     commentDelete
+
 
 }
 }
