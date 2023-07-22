@@ -9,7 +9,7 @@ import {
   MoreHorizOutlined,
   ReportOutlined,
   AddComment,
-  ReplyOutlined
+  ReplyOutlined,
 } from "@mui/icons-material";
 
 import { Carousel } from "react-responsive-carousel";
@@ -28,21 +28,18 @@ import {
   Popover,
   TextField,
 } from "@mui/material";
-import FlexBetween from "../../components/FlexBetween"
-// import Friend from "../../components/Friend/Friend";
+import FlexBetween from "../../components/FlexBetween";
+import Friend from "../../components/Friend/Friend";
 import WidgetWrapper from "../../components/Widget/WidgetWrapper";
-// import {
-//   commentAdd,
-//   deleteComment,
-//   editPost,
-//   getLike,
-//   reportPost,
-// } from "../../api/postRequest/postRequest";
-import{
+
+import {
   editPost,
   deletePost,
-  commentAdd
-} from "../../api/postRequest/postRequest"
+  commentAdd,
+  deleteComment,
+  getLike,
+  reportPost,
+} from "../../api/postRequest/postRequest";
 import { useSelector, useDispatch } from "react-redux";
 import { setPost, deleteUpdate } from "../../state/slice";
 
@@ -59,9 +56,8 @@ const PostWidget = ({
   likes,
   comments,
   report,
-  buttonlicked,
+  buttonclicked,
   isProfile,
-  
 }) => {
   const [isComments, setIsComments] = useState(false);
   const [isDeleteVisible, setIsDeleteVisible] = useState(false);
@@ -76,47 +72,65 @@ const PostWidget = ({
   const isLiked = likes.includes(loggedInUserId);
   const isCurrentUserPost = loggedInUserId === postUserId;
   const picturePath = true;
+  const loggedUserId = useSelector((state) => state.user._id);
+
   const token = useSelector((state) => state.token);
   const { userName } = useSelector((state) => state.user);
-  const loggedUserId = useSelector((state) => state.user._id);
-  
+
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
   const dispatch = useDispatch();
   const likeCount = likes.length;
   const commentCount = comments.length;
-  const postTime = postCreatedAt
-const isProfilePost = useState(true)
-const reported = report.some((report) => report.userId === loggedUserId);
+  const postTime = formatDate(postCreatedAt);
+  const isProfilePost = useState(true);
   
 
-  const handleDelete = async () => {
+  const reported = report.some((item) => item.userId.toString().trim() === loggedInUserId.toString().trim());
+  
+   const handleDelete = async () => {
     const result = await deletePost(postId, token);
     dispatch(deleteUpdate(postId));
     setIsDeleteVisible(false);
   };
-
 
   const handleEdit = () => {
     setIsEditVisible(true);
     setAnchorEl(null);
   };
 
-  
   const handleAddComment = async () => {
     const comment = `${userName}: ${commentInput}`;
     const result = await commentAdd(loggedUserId, postId, comment, token);
     dispatch(setPost({ post: result }));
     setCommentInput("");
- 
-  }
+  };
 
   const handleDeleteComment = async (index, userId) => {
     const result = await deleteComment(index, userId, postId, token);
     dispatch(setPost({ post: result }));
   };
-  
+
+  const handleReport = () => {
+    setIsReportVisible(true);
+    setAnchorEl(null);
+  };
+
+  const handleReportCancel = () => {
+   
+    setIsReportVisible(false);
+    setReportReason("");
+  };
+
+  const handleReportConfirm = async () => {
+    console.log("handlereportConfirm");
+    const result = await reportPost(loggedUserId, postId, reportReason, token);
+
+    dispatch(setPost({ post: result }));
+    setIsReportVisible(false);
+    setReportReason("");
+  };
 
   const handleDeleteConfirm = () => {
     setIsDeleteVisible(true);
@@ -135,7 +149,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
   };
 
   const isVideo = (fileName) => {
-    const videoExtensions = [".mp4", ".mov", ".avi", ".mkv"]; 
+    const videoExtensions = [".mp4", ".mov", ".avi", ".mkv"];
     const extension = fileName
       .substring(fileName.lastIndexOf("."))
       .toLowerCase();
@@ -150,23 +164,71 @@ const reported = report.some((report) => report.userId === loggedUserId);
     setIsEditVisible(false);
   };
 
-  
+  const handleLike = async () => {
+    const result = await getLike(token, postId, loggedUserId);
+    dispatch(setPost({ post: result.likedPost }));
+    buttonclicked();
+  };
+
   const [showMore, setShowMore] = useState(false);
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
   };
 
-   const shortDescription = description.slice(0, MAX_DESCRIPTION_LENGTH);
+  const shortDescription = description.slice(0, MAX_DESCRIPTION_LENGTH);
+
+  function formatDate(timestamp) {
+    const currentTimestamp = Date.now();
+    const diffInMilliseconds = currentTimestamp - new Date(timestamp).getTime();
+  
+    // Time difference in seconds, minutes, hours, and days
+    const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+  
+    // Helper function to format the time
+    const formatTime = (hours, minutes) => {
+      if (hours === 0 && minutes === 0) {
+        return "within an hour";
+      } else {
+        return hours > 0
+          ? `${hours} ${hours === 1 ? "hour" : "hours"} ago`
+          : `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+      }
+    };
+  
+    if (diffInDays === 0) {
+      // Today
+      return formatTime(diffInHours, diffInMinutes);
+    } else if (diffInDays === 1) {
+      // Yesterday
+      return "yesterday";
+    } else if (diffInDays < 7) {
+      // A few days ago
+      return `${diffInDays} ${diffInDays === 1 ? "day" : "days"} ago`;
+    } else {
+      // Display the exact date
+      const date = new Date(timestamp);
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      return formattedDate;
+    }
+  }
+  
   return (
     <WidgetWrapper m={isProfile ? "0rem 0 2rem 0" : "2rem 0"}>
-      {/* <Friend
+      <Friend
         friendId={postUserId}
         name={name}
         subtitle={postTime}
         userPicturePath=''
         isProfilePost={isProfilePost}
-      /> */}
+      />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {showMore ? description : shortDescription}
       </Typography>
@@ -174,7 +236,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
         <Button onClick={toggleShowMore}>
           {showMore ? "Show Less" : "Show More"}
         </Button>
-       )} 
+      )}
       {image.length > 1 && (
         <>
           <Carousel
@@ -218,25 +280,22 @@ const reported = report.some((report) => report.userId === loggedUserId);
         <>
           {isVideo(image[0]) ? (
             <video
-              width='100%'
-              height='auto'
+              width="100%"
+              height="auto"
               controls
               style={{
                 borderRadius: "0.75rem",
                 marginTop: "0.75rem",
               }}
             >
-              <source
-                src={`${image[0]}`}
-                type='video/mp4'
-              />
+              <source src={`${image[0]}`} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           ) : (
             <img
-              width='100%'
-              height='auto'
-              alt='post'
+              width="100%"
+              height="auto"
+              alt="post"
               style={{
                 borderRadius: "0.75rem",
                 marginTop: "0.75rem",
@@ -246,10 +305,10 @@ const reported = report.some((report) => report.userId === loggedUserId);
           )}
         </>
       )}
-      <FlexBetween mt='0.25rem'>
-        <FlexBetween gap='1rem'>
-          <FlexBetween gap='0.3rem'>
-            <IconButton >
+      <FlexBetween mt="0.25rem">
+        <FlexBetween gap="1rem">
+          <FlexBetween gap="0.3rem">
+            <IconButton onClick={handleLike}>
               {isLiked ? (
                 <FavoriteOutlined sx={{ color: primary }} />
               ) : (
@@ -259,7 +318,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
             <Typography>{likeCount}</Typography>
           </FlexBetween>
 
-          <FlexBetween gap='0.3rem'>
+          <FlexBetween gap="0.3rem">
             <IconButton onClick={() => setIsComments(!isComments)}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
@@ -272,12 +331,12 @@ const reported = report.some((report) => report.userId === loggedUserId);
             <div>
               <IconButton
                 onClick={handlePopoverOpen}
-                aria-describedby='more-options'
+                aria-describedby="more-options"
               >
                 <MoreHorizOutlined />
               </IconButton>
               <Popover
-                id='more-options'
+                id="more-options"
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handlePopoverClose}
@@ -292,7 +351,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
               >
                 <Box p={2}>
                   <Button onClick={handleEdit}>Edit</Button>
-                  <Button onClick={handleDeleteConfirm} color='error'>
+                  <Button onClick={handleDeleteConfirm} color="error">
                     Delete
                   </Button>
                 </Box>
@@ -302,12 +361,12 @@ const reported = report.some((report) => report.userId === loggedUserId);
             <div>
               <IconButton
                 onClick={handlePopoverOpen}
-                aria-describedby='more-options'
+                aria-describedby="more-options"
               >
                 <MoreHorizOutlined />
               </IconButton>
               <Popover
-                id='more-options'
+                id="more-options"
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handlePopoverClose}
@@ -319,25 +378,19 @@ const reported = report.some((report) => report.userId === loggedUserId);
                   vertical: "top",
                   horizontal: "right",
                 }}
-              >
-                <Box p={2}>
-                  <Button >
-                    {reported ? "Already Reported" : "Report"}
-                  </Button>
-                </Box>
-              </Popover>
+              ></Popover>
             </div>
           )
         ) : isCurrentUserPost ? (
           <div>
             <IconButton
               onClick={handlePopoverOpen}
-              aria-describedby='more-options'
+              aria-describedby="more-options"
             >
               <MoreHorizOutlined />
             </IconButton>
             <Popover
-              id='more-options'
+              id="more-options"
               open={open}
               anchorEl={anchorEl}
               onClose={handlePopoverClose}
@@ -352,7 +405,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
             >
               <Box p={2}>
                 <Button onClick={handleEdit}>Edit</Button>
-                <Button onClick={handleDeleteConfirm} color='error'>
+                <Button onClick={handleDeleteConfirm} color="error">
                   Delete
                 </Button>
               </Box>
@@ -362,12 +415,12 @@ const reported = report.some((report) => report.userId === loggedUserId);
           <div>
             <IconButton
               onClick={handlePopoverOpen}
-              aria-describedby='more-options'
+              aria-describedby="more-options"
             >
               <MoreHorizOutlined />
             </IconButton>
             <Popover
-              id='more-options'
+              id="more-options"
               open={open}
               anchorEl={anchorEl}
               onClose={handlePopoverClose}
@@ -381,21 +434,24 @@ const reported = report.some((report) => report.userId === loggedUserId);
               }}
             >
               <Box p={2}>
-                <Button  disabled={reported}>
-                  {reported ? "Already Reported" : "Report"}
-                </Button>
+              {reported ? <Button disabled={reported}  >
+                                             Already Reported
+                  </Button> : <Button onClick={handleReport} disabled={reported}  >
+                                             Report
+                  </Button> }
+                
               </Box>
             </Popover>
           </div>
         )}
       </FlexBetween>
       {isComments && (
-        <Box mt='0.5rem'>
+        <Box mt="0.5rem">
           {comments.map(({ userId, comment }, index) => (
             <React.Fragment key={index}>
               <Box>
                 <Divider />
-                <FlexBetween alignItems='center'>
+                <FlexBetween alignItems="center">
                   <Typography
                     onClick={() => navigate(`/profile/${userId}`)}
                     sx={{
@@ -413,9 +469,8 @@ const reported = report.some((report) => report.userId === loggedUserId);
                   {(isCurrentUserPost || userId === loggedUserId) && (
                     <IconButton
                       onClick={() => handleDeleteComment(index, userId)}
-                      size='small'
+                      size="small"
                     >
-                      
                       <DeleteOutlined />
                     </IconButton>
                   )}
@@ -425,18 +480,18 @@ const reported = report.some((report) => report.userId === loggedUserId);
             </React.Fragment>
           ))}
 
-          <Box display='flex' alignItems='center' mt='0.5rem'>
+          <Box display="flex" alignItems="center" mt="0.5rem">
             <TextField
-              variant='outlined'
+              variant="outlined"
               fullWidth
-              label='Add a comment...'
-              size='small'
+              label="Add a comment..."
+              size="small"
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
             />
             <Button
-              variant='contained'
-              size='small'
+              variant="contained"
+              size="small"
               onClick={handleAddComment}
               disabled={!commentInput.trim()}
             >
@@ -453,7 +508,7 @@ const reported = report.some((report) => report.userId === loggedUserId);
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button onClick={handleDelete} color='error'>
+          <Button onClick={handleDelete} color="error">
             Delete
           </Button>
         </DialogActions>
@@ -462,43 +517,49 @@ const reported = report.some((report) => report.userId === loggedUserId);
         <DialogTitle>Edit Post</DialogTitle>
         <DialogContent>
           <TextField
-            variant='outlined'
+            variant="outlined"
             fullWidth
             multiline
             rows={4}
-            label='Edit description'
+            label="Edit description"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsEditVisible(false)}>Cancel</Button>
-          <Button onClick={handleSaveEdit} color='primary' >
+          <Button onClick={handleSaveEdit} color="primary">
             Save
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={isReportVisible}                    
-      >
-        <DialogTitle>Report Post</DialogTitle>
-        <DialogContent>
-          <TextField
-            variant='outlined'
-            fullWidth
-            multiline
-            rows={4}
-            label='Reason for reporting'
-            value={reportReason}
-            onChange={(e) => setReportReason(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button >Cancel</Button>
-          <Button  color='error' disabled={reportReason.trim() === ""}>
-            Report
-          </Button>
-        </DialogActions>
-      </Dialog>
+    
+      
+
+    
+
+<Dialog open={isReportVisible} >
+  <DialogTitle>Report Post</DialogTitle>
+  <DialogContent>
+    <TextField
+      variant='outlined'
+      fullWidth
+      multiline
+      rows={4}
+      label='Reason for reporting'
+      value={reportReason}
+      onChange={(e) => setReportReason(e.target.value)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleReportCancel}>Cancel</Button>
+    <Button onClick={handleReportConfirm} color='error' disabled={reportReason.trim() === ""}>
+      Report
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
     </WidgetWrapper>
   );
 };

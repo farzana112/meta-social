@@ -95,3 +95,32 @@ export const getAllPosts = async (
    return deleteComment
 
   }
+
+  export const postLike = async (
+    id: string,
+    loggedId: string,
+    repository: ReturnType<postDbInterfaceType>
+  ) => {
+    const likedPost = await repository.likePost(id, loggedId);
+  
+    if (!likedPost) {
+      throw new AppError("Post not Found", HttpStatus.BAD_REQUEST);
+    }
+    return likedPost;
+  };
+  
+
+  export const postReport = async (
+    postId:string,
+    userId:string,
+    reason:string,
+    repository:ReturnType<postDbInterfaceType>
+  ) => {
+    const reportPost = await repository.reportPost(postId,userId,reason)
+
+    if (!reportPost) {
+      throw new AppError("Reported Already", HttpStatus.BAD_REQUEST);
+    }
+    return reportPost;
+  
+  }

@@ -1,4 +1,5 @@
 import User from "../models/userModel";
+import Otp from "../models/otpModel"
 export const userRepositoryMongoDB = () => {
     const addUser = async (user: {
         name: string;
@@ -71,7 +72,296 @@ export const userRepositoryMongoDB = () => {
        
       }
       };
+
+      const sendMail= async (email:string) => {
+        try{
+        const user:any =await User.findOne( { email : email} )
+        
+        return user
+
+        } catch(error){
+
+          console.error("Error fetching the user with this email id")
+        }
+      }
+
+
+      const forgotPassword=async(otp:number,password:string) => {
+      try{
+        const data:any = await Otp.find({otp:otp})
+        if(data){
+          const user:any =await User.find({email:data.email})
+          return user
+        }
+
+        return ;
+
+
+      }catch(error) {
+        console.error(error)
+      }
+      }
+
+      const updateProfile = async (
+        id: string,
+        user: {
+          name: string;
+          userName: string;
+          email: string;
+          number?: string;
+          about?: string;
+          location?: string;
+          age?:number
+          displayPicture?: string | null;
+        }
+      ) => {
+        const updatedProfile: any = await User.findByIdAndUpdate(id, user, {
+          new: true,
+        });
+        return updatedProfile;
+      };
+
+     
       
+      
+      const followersList: any = async (id: string) => {
+        const user: any = await User.findOne({ _id: id }).select("-password");
+        console.log("followers of the user");
+        console.log(user);
+      
+        // Map user.followers to an array of promises
+        const followersPromises = user?.followers?.map(async (id: string) => {
+          return await User.findById(id).select("-password");
+        });
+      
+        // Await the resolution of all promises using Promise.all
+        const followers = await Promise.all(followersPromises);
+        console.log("followers");
+        console.log(followers);
+      
+        return followers;
+      };
+
+
+      // const followingList: Function = async (id: string) => {
+      //   const user: any = await User.findOne({ _id: id }).select("-password");
+      //   console.log("user")
+      //   console.log(user)
+      //   const following = await Promise.all(
+      //     user?.following?.map(
+      //       async (id: string) => await User.findById(id).select("-password")
+      //     )
+      //   );
+      //   console.log("following   jfhsfuetyetyeyrtye")
+      //   console.log(following)
+    
+      //   return following;
+      // };
+
+
+
+// adapted
+      const followingList: Function = async (id: string) => {
+        const user: any = await User.findOne({ _id: id }).select("-password");
+        console.log("The User")
+        console.log(user)
+        if (!user || !user.following) {
+          return []; // Return an empty array if user or user.following is null or undefined
+        }
+        const following = await Promise.all(
+          user?.following?.map(
+            async (id: string) => await User.findById(id).select("-password")
+          )
+        );
+
+        console.log("following from userzrepo")
+        console.log(following)
+    
+        return following;
+      }
+
+
+    //   const followUser = async (id: string, friendId: string) => {
+    //     const followingUser: any = await User.findOne({ _id: id });
+    //     const follow: any = await User.findOne({ _id: friendId });
+    //     if (!follow?.followers?.includes(id)) {
+    //       await followingUser?.updateOne(
+    //         {
+    //           $push: {
+    //             following: friendId,
+    //           },
+    //         },
+    //         { new: true }
+    //       );
+    //       await follow?.updateOne(
+    //         {
+    //           $push: {
+    //             followers: id,
+    //           },
+    //         },
+    //         { new: true }
+    //       );
+    //     } else {
+    //       await followingUser.updateOne(
+    //         {
+    //           $pull: {
+    //             following: friendId,
+    //           },
+    //         },
+    //         { new: true }
+    //       );
+    //       await follow.updateOne(
+    //         {
+    //           $pull: {
+    //             followers: id,
+    //           },
+    //         },
+    //         { new: true }
+    //       );
+    //     }
+    //     const user: any = await User.findOne({ _id: id }).select("-password");
+    //     const following = await Promise.all(
+    //       user.following?.map(
+    //         async (id: string) => await User.findById(id).select("-password")
+    //       )
+    //     );
+    // console.log("following")
+    // console.log(following)
+
+    //     const followers = await Promise.all(
+    //       user.followers?.map(
+    //         async (id: string) => await User.findById(id).select("-password")
+    //       )
+    //     );
+    //     console.log( "!!!!!!!!!!")
+    //     console.log(followers)
+
+    
+    //     return { following, followers };
+    //   };
+
+
+    const followUser = async (id: string, friendId: string) => {
+      const followingUser: any = await User.findOne({ _id: id });
+      console.log(followingUser.name)
+      const follow: any = await User.findOne({ _id: friendId });
+    
+      if (!follow?.followers?.includes(id)) {
+        await followingUser?.updateOne(
+          {
+            $push: {
+              following: friendId,
+            },
+          },
+          { new: true }
+        );
+        await follow?.updateOne(
+          {
+            $push: {
+              followers: id,
+            },
+          },
+          { new: true }
+        );
+      } else {
+        await followingUser?.updateOne(
+          {
+            $pull: {
+              following: friendId,
+            },
+          },
+          { new: true }
+        );
+        await follow?.updateOne(
+          {
+            $pull: {
+              followers: id,
+            },
+          },
+          { new: true }
+        );
+      }
+    
+      const user: any = await User.findOne({ _id: id }).select("-password");
+      console.log(user)
+      const following = await Promise.all(
+        (user.following || []).map(async (id: string) => await User.findById(id).select("-password"))
+      );
+      console.log("following");
+      console.log(following);
+    
+      const followers = await Promise.all(
+        (user.followers || []).map(async (id: string) => await User.findById(id).select("-password"))
+      );
+      console.log("followers");
+      console.log(followers);
+    
+      return { following, followers };
+    };
+    
+
+
+      const unFollowUser = async (id: string, friendId: string) => {
+        let followingUser: any = await User.findOne({ _id: id });
+        console.log("the follwoing user" , followingUser?.name)
+        console.log(followingUser?.name)
+        let follow: any = await User.findOne({ _id: friendId });
+        console.log("you are about to unfollow")
+        console.log(follow?.name)
+    
+        if (followingUser?.following?.includes(friendId)) {
+          await followingUser.updateOne(
+            {
+              $pull: {
+                following: friendId,
+              },
+            },
+            { new: true }
+          );
+          await follow?.updateOne(
+            {
+              $pull: {
+                followers: id,
+              },
+            },
+            { new: true }
+          );
+        } else {
+          return null;
+        }
+        console.log("following User fdgretryttyryryrfyfrrurrfruuruuu")
+        
+        followingUser = await User.findOne({ _id: id });
+        console.log(followingUser)
+        follow = await User.findOne({ _id: friendId });
+        return {
+          follow,
+          followingUser,
+        };
+      };
+
+      const reportUser = async (id: string, userId: string, reason: string) => {
+        try {
+          const user: any = await User.findById(id);
+          const isReported = user.report.some((report: { userId: string }) => report.userId === userId);
+          if (isReported) {
+            return null;
+          }
+          user.report.push({ userId, reason });
+          await user.save();
+          return user;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      const userSearch = async (name: string) => {
+        const user: any = await User.find({
+          name: { $regex: `^${name}`, $options: "i" },
+        });
+    
+        return user;
+      };
 
 return{
   addUser,
@@ -80,7 +370,15 @@ return{
   getUserByAge,
   getAllUsers,
   userHandle,
-  getUserById
+  getUserById,
+  sendMail,
+  updateProfile,
+  followUser,
+  unFollowUser,
+  followersList,
+  followingList,
+  reportUser,
+  userSearch
   
 
 

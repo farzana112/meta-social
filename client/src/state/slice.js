@@ -8,7 +8,9 @@ const initialState={
     admin:null,
     posts:[],
     followers:[],
-    following:[]
+    following:[],
+    friendFollowers:[],
+    friendFollowing:[]
 
 };
 export const authSlice = createSlice({
@@ -53,7 +55,7 @@ export const authSlice = createSlice({
 
         setPost:(state,action)=> {
             const updatedPosts=state.posts.map((post)=>{
-                if(post._id===action.payload.post_id) return action.payload.post
+                if(post._id===action.payload.post._id) return action.payload.post
                 return post
             })
             state.posts=updatedPosts
@@ -64,15 +66,12 @@ export const authSlice = createSlice({
             state.posts.shift(action.payload.posts)
         },
 
-        setFollowing: (state, action) => {
-            if (state.user) {
-                state.user.following = action.payload.following;
-                state.following = action.payload.following
-            } else {
-                console.error("user friends non-existent :(");
-            }
-        },
         
+        deleteUpdate: (state, action) => {
+            const postId = action.payload;
+            state.posts = state.posts.filter((post) => post._id !== postId);
+        },
+
 
         setFollowers: (state, action) => {
             if (state.user) {
@@ -82,7 +81,15 @@ export const authSlice = createSlice({
                 console.error("user friends non-existent :(");
             }
         },
-        
+        setFollowing: (state, action) => {
+            if (state.user) {
+                state.user.following = action.payload.following;
+                state.following = action.payload.following
+            } else {
+                console.error("user following non-existent :(");
+            }
+        },
+
         setFriendFollowers: (state, action) => {
             state.friendFollowers = action.payload?.followers;
         },
@@ -93,16 +100,18 @@ export const authSlice = createSlice({
         setFriendFollowing: (state, action) => {
             state.friendFollowing = action.payload?.following;
         },
-        
-        deleteUpdate: (state, action) => {
-            const postId = action.payload;
-            state.posts = state.posts.filter((post) => post._id !== postId);
+
+        setUpdate: (state, action) => {
+            state.user = action.payload;
+            state.user.following = state.following
+            state.user.followers = state.followers
         },
-        
     },
+
+
   });
 
-export const {setMode,setLogin,setLogout,setAdminLogin,setAdminLogout,setPost,setPosts,setFollowing,setFollowers,setUpdatePost,setFriendFollowers,deleteUpdate,setUpdateFriendFollowers}=authSlice.actions
+export const {setMode,setLogin,setLogout,setAdminLogin,setAdminLogout,setPost,setPosts,setUpdatePost,deleteUpdate,setFollowers,setFollowing,setFriendFollowing,setFriendFollowers,setUpdateFriendFollowers,setUpdate}=authSlice.actions
 
 export default authSlice.reducer;
 

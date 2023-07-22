@@ -32,8 +32,46 @@ const getAllUsers=async()=>
 
   const getUserById= async(id:string)=>
     await repository.getUserById(id)
-  
 
+    const sendMail=async(email:string) => 
+      await repository.sendMail(email);
+    
+
+    const updateProfile = async (
+      id: string,
+      user: {
+        name: string;
+        userName: string;
+        email: string;
+        number?: string;
+        about?: string;
+        location?: string;
+        age?:number
+        displayPicture?: string | null;
+      }
+    ) => await repository.updateProfile(id, user);
+
+
+    const followUser = async (id: string, friendId: string) =>
+    await repository.followUser(id, friendId);
+
+    const unFollowUser= async ( id:string , friendId:string) => 
+    await repository.unFollowUser(id,friendId) ;
+    
+    
+    const followersList = async (id: string) =>
+    await repository.followersList(id);
+
+
+    const followingList = async (id: string) =>
+    await repository.followingList(id);
+
+    const reportUser = async (id:string,userId:string,reason:string) => 
+    await repository.reportUser(id,userId,reason)
+
+    const userSearch = async (name: string) => await repository.userSearch(name);
+
+    
       return {
         addUser,
         getUserByEmail,
@@ -41,7 +79,16 @@ const getAllUsers=async()=>
         getUserByAge,
         getAllUsers,
         userHandle,
-        getUserById
+        getUserById,
+        sendMail,
+        updateProfile,
+        followUser,
+        unFollowUser,
+        followersList,
+        followingList,
+        reportUser,
+        userSearch
+    
       }
     }
     

@@ -21,6 +21,7 @@ const authRouter=()=>{
     router.post("/register",controller.registerUser)
      router.post("/login",controller.loginUser)
      router.post('/adminLogin',controller.adminLogin)
+     router.post('/send-email',controller.emailSend)
     return router
 }
 

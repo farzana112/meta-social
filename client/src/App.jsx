@@ -10,6 +10,7 @@ import { themeSettings } from "./theme";
 import Auth from "./components/Auth/Auth.jsx";
 import AdminLogin from "./pages/AdminLogin/AdminLogin";
 import AdminHome from "./pages/AdminHome/AdminHome"
+import Profile from "./pages/Profile/Profile.jsx"
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
@@ -33,6 +34,8 @@ function App() {
               path="/"
               element={token ? <Navigate to="home" /> : <Navigate to="auth" />}
             />
+           
+
             <Route
               path="/home"
               element={token ? <Home /> : <Navigate to="../auth" />}
@@ -40,6 +43,11 @@ function App() {
             <Route
               path="/auth"
               element={token ? <Navigate to="../home" /> : <Auth />}
+            />
+
+<Route
+              path='/profile/:userId'
+              element={token ? <Profile/> : <Navigate to='/' />}
             />
 
             <Route

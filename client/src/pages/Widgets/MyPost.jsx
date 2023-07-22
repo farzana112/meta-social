@@ -48,6 +48,7 @@ const MyPostWidget = ({ picturePath, handleClick }) => {
     const handlePost = async () => {
       if (images.length === 0) {
         console.log("inside if");
+        
         toast.error("Please select an image");
         return;
       }

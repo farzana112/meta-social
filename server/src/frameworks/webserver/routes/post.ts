@@ -16,6 +16,10 @@ const postRouter= () =>{
     router.put("/:postId",controller.editPost)
     router.put("/:postId/comment",controller.commentPost)
     router.put("/:postId/commentDelete",controller.commentDelete)
+    router.put('/:id/like',controller.likePost)
+    router.put("/:postId/report",controller.reportPost)
+
+    
 
 
 

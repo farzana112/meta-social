@@ -4,6 +4,7 @@ import UserWidget from "../Widgets/UserWidget";
 // import MyPostWidget from "../../components/Widget/PostWidget";
 import PostsWidget from "../../components/Widget/PostsWidget"
 import MyPostWidget from "../../pages/Widgets/MyPost"
+import FriendListWidget from "../../components/Widget/FriendList"; 
 import { useSelector} from "react-redux"
 import { useState, useEffect} from "react"
 const HomePage=()=>{
@@ -45,9 +46,13 @@ const handleClick = () =>{
             flexBasis='26%'
           
           >
+
+<FriendListWidget userId={_id} handleClick={handleClick}/>
+
            
 
             <Box m='2rem 0' />
+            <FriendListWidget userId={_id} isFollowingList={true} handleClick={handleClick} />
             
 
             <Box m='2rem 0' />

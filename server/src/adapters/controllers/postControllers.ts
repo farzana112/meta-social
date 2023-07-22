@@ -5,7 +5,7 @@ import { postDbInterfaceType } from "../../application/repositories/postDbReposi
 import { UserDbInterface } from "../../application/repositories/userDbRepository"
 import { UserRepositoryMongoDB, userRepositoryMongoDB } from "../../frameworks/database/Mongodb/repositories/userRepository"
 import {
-    postCreate,getAllPosts,getUserPosts,postDelete, postEdit , addComment,deleteComment
+    postCreate,getAllPosts,getUserPosts,postDelete, postEdit , addComment,deleteComment,postLike , postReport
 } from "../../application/useCases/post/post"
 const postController = (
     postDbInterface:postDbInterfaceType,
@@ -19,9 +19,9 @@ const postController = (
     const createPost= asyncHandler( async (req:Request , res:Response)=>{
         const image:string[] =[]
         const { userId, description , userName} =req.body
-        console.log(req.body)
+        
         const files:any=req?.files
-        console.log(files)
+        
         for(const file of files){
             const picture= file.path;
             image.push(picture)
@@ -97,6 +97,30 @@ const postController = (
       deletedComment
     })
   })
+
+  const likePost = asyncHandler( async (req: Request, res: Response) => {
+    const{id} = req.params
+    const{loggedId} = req.body
+    
+    const likedPost = await postLike(id,loggedId,dbRepositoryPost)
+    res.json({
+      status: "success",
+      message: "Successfully liked",
+      likedPost
+    })
+  })
+
+
+  const reportPost = asyncHandler( async (req: Request, res: Response) => {
+    const{postId} = req.params
+    const {userId,reason} = req.body
+    const reportedPost = await postReport(postId,userId,reason,dbRepositoryPost)
+    res.json({
+      status: "success",
+      message: "Successfully report",
+      reportedPost
+    })
+  })
 return{
 
      createPost,
@@ -105,7 +129,10 @@ return{
      deletePost,
      editPost,
      commentPost,
-     commentDelete
+     commentDelete,
+     likePost,
+     reportPost
+
 
 
 }

@@ -73,6 +73,7 @@ export const createPost = async (token, formData) => {
     }
   };
 
+  
   export const commentAdd = async (loggedUserId,postId,commentInput,token) => {
     try {
       const response = await API.put(`api/post/${postId}/comment`,{userId: loggedUserId,comment:commentInput} ,{
@@ -86,3 +87,60 @@ export const createPost = async (token, formData) => {
       throw error;
     }
   };
+
+  
+  export const deleteComment = async (index,loggedUserId,postId,token) => {
+    try {
+      const response = await API.put(`api/post/${postId}/commentDelete`,{userId: loggedUserId,index:index} ,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = response.data.deletedComment;
+      return data;
+    } catch (error) {
+      // Handle error
+      console.error("Error getting user posts:", error);
+      throw error;
+    }
+  };
+
+ 
+  export const getLike = async (token, postId, loggedUserId) => {
+    try {
+      const response = await API.put(
+        `api/post/${postId}/like`,
+        { loggedId: loggedUserId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = response.data;
+      return data;
+    } catch (error) {
+      // Handle error
+      console.error("Error getting user posts:", error);
+      throw error;
+    }
+  };
+
+  
+  export const reportPost = async (loggedUserId,postId,reason,token) => {
+    try {
+      const response = await API.put(`api/post/${postId}/report`,{userId: loggedUserId,reason:reason} ,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if(!response){
+        console.log("no response from backend")
+      }
+      const data = response.data.reportedPost;
+      console.log(response)
+      console.log("reported post api")
+      console.log(data)
+      return data;
+
+    } catch (error) {
+      // Handle error
+      console.error("Error getting user posts:", error);
+      throw error;
+    }
+  };
+  

@@ -44,6 +44,7 @@ export const postRepositoryImp= () => {
       };
 
 
+
       const addComment = async (postId:string, userId:string , comment:string) => {
         try {
           const updatedPost = await Post.findByIdAndUpdate(
@@ -74,6 +75,64 @@ export const postRepositoryImp= () => {
           
         }
       }
+
+      const likePost = async (id: string, loggedId: string) => {
+        const post: any = await Post.findById({ _id: id });
+
+        
+    if(!post){
+      return
+    }
+        if (!post.likes.includes(loggedId)) {
+          await post.updateOne(
+            {
+              $push: {
+                likes: loggedId,
+              },
+            },
+            { new: true }
+          );
+
+        } else {
+          await post.updateOne(
+            {
+              $pull: {
+                likes: loggedId,
+              },
+            },
+            { new: true }
+          );
+        }
+       
+        return post;
+      };
+
+      const reportPost = async (postId: string, userId: string, reason: string) => {
+        try {
+          const post: any = await Post.findById(postId);
+          const isReported = post.report.some(
+            (report: { userId: string; }) => report.userId === userId
+          );
+          if (isReported) {
+            return null;
+          }
+          const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            { $push: { report: { userId, reason } } },
+            { new: true }
+          );
+          return updatedPost;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      
+
+
+
+    
+
+      
       return {
         createPost,
         getAllPosts,
@@ -81,7 +140,9 @@ export const postRepositoryImp= () => {
         deletePost,
         editPost,
         addComment,
-        deleteComment
+        deleteComment,
+        likePost,
+        reportPost
         
       }
 

@@ -260,7 +260,7 @@ const Auth = () => {
             <Grid item>
               <Button onClick={switchMode}>
                 {isSignup
-                  ? "Already have an account? Login In"
+                  ? "Already have an account? Log In"
                   : "New user? Sign Up"}
               </Button>
             </Grid>

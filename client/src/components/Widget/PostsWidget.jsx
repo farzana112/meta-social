@@ -7,7 +7,8 @@ import PostWidget from "../../components/Widget/PostWidget"
 import {getPosts,getUserPosts} from "../../api/postRequest/postRequest"
 import {
     Box,
-    LinearProgress
+    LinearProgress,
+    CircularProgress
 } 
 from "@mui/material"
 
@@ -32,8 +33,7 @@ const getPost=async () => {
 const userPosts = async () => {
     const response = await getUserPosts(userId, token);
     const data = await response;
-    console.log("posts of the user")
-    console.log(response)
+    
     dispatch(setPosts({ posts: data.posts }));
     setIsLoading(false);
   };
@@ -54,9 +54,10 @@ const userPosts = async () => {
     {isLoading ? (
       <>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <LinearProgress color='secondary' />
+          {/* <LinearProgress color='secondary' />
           <LinearProgress color='success' />
-          <LinearProgress color='inherit' />
+          <LinearProgress color='inherit' /> */}
+          <CircularProgress variant="determinate" value={50} /> {/* Determinate */}
         </Box>
       </>
     ) : posts.length === 0 ? (

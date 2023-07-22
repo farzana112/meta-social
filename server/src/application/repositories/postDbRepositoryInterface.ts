@@ -23,6 +23,11 @@ export const postDbInterface=(repository:ReturnType<postRepositoryType>) => {
     const addComment= async ( postId:string , userId: string , comment:string)=> await repository.addComment(postId,userId,comment)
 
     const deleteComment= async ( postId:string , userId:string , index:number) => await repository.deleteComment(postId,userId,index)
+
+    const likePost = async (id: string, loggedId: string) => await repository.likePost(id, loggedId)
+
+    const reportPost = async(postId:string,userId:string,reason:string) => await repository.reportPost(postId,userId,reason)
+
     return {
         createPost,
         getAllPosts,
@@ -30,7 +35,9 @@ export const postDbInterface=(repository:ReturnType<postRepositoryType>) => {
         deletePost,
         editPost,
         addComment,
-        deleteComment
+        deleteComment,
+        likePost,
+        reportPost
     }
 
 

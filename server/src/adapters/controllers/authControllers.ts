@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { AuthService } from "../../frameworks/services/authservices";
+import { getMailService } from "../../frameworks/services/nodemailer";
 import {  AuthServiceInterface } from "../../application/services/authServicInterface";
 import { UserDbInterface } from "../../application/repositories/userDbRepository";
 // import { userRepositoryMongoDB } from "../../frameworks/database/Mongodb/repositories/userRepository";
@@ -10,10 +11,11 @@ import {  AdminDbInterface } from "../../application/repositories/adminDbReposit
 import {
   userRegister,
   userLogin,
-  adminlogin
+  adminlogin,
+  sendMail
  } from "../../application/useCases/auth/userAuth";
 import { log } from "console";
-
+import Otp from "../../frameworks/database/Mongodb/models/otpModel";
 
 const authController=( 
     authServiceInterface:AuthServiceInterface,
@@ -85,11 +87,39 @@ const authController=(
           token,
         });
       });
+
+      const emailSend =asyncHandler(async ( req: Request , res:Response) => {
+        const { email } : { email : string } =
+        req.body
+        
+        const token = await sendMail (
+          email,
+          dbRepositoryUser,
+          authService
+        )
+        
+        console.log(token.token)
+       const otp=getMailService(email)
+       console.log("otp"+otp)
+       const otpDocument = new Otp({
+        email: email,
+        otp: otp,
+        token: token.token, // Make sure you have the 'token' value available
+      });
+      await otpDocument.save();
+      
+        res.json({
+          status:"success",
+         otp:otp,
+          token
+        })
+      })
       
       return{
         registerUser,
         loginUser,
-        adminLogin
+        adminLogin,
+        emailSend
       }
 
 }

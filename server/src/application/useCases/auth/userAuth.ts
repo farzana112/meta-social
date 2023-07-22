@@ -59,8 +59,7 @@ export const userRegister = async (
     authService:ReturnType<AuthServiceInterface>
   )=>{
     const user: any = await userRepository.getUserByUserName(userName);
-    console.log("username"+userName)
-    console.log(user)
+    
     if (!user) {
       throw new AppError("This user does not exist", HttpStatus.UNAUTHORIZED);
     }
@@ -107,6 +106,22 @@ export const userRegister = async (
     const token = authService.generateToken(admin._id.toString());
     return { token, admin };
   };
+
+  export const sendMail= async (
+    email:string,
+    userRepository:ReturnType<UserDbInterface>,
+    authService:ReturnType<AuthServiceInterface>
+  ) => {
+    const user : any = await userRepository.sendMail(email)
+    console.log("user from useCase")
+     console.log(user)
+    if (!user) {
+      throw new AppError("This user does not exist", HttpStatus.UNAUTHORIZED);
+    }
+
+    const token = authService.generateToken(user._id.toString());
+    return { token, user };
+  }
 
 
 
