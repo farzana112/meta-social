@@ -10,7 +10,8 @@ const initialState={
     followers:[],
     following:[],
     friendFollowers:[],
-    friendFollowing:[]
+    friendFollowing:[],
+    chatUsers:[]
 
 };
 export const authSlice = createSlice({
@@ -81,6 +82,8 @@ export const authSlice = createSlice({
                 console.error("user friends non-existent :(");
             }
         },
+        
+        
         setFollowing: (state, action) => {
             if (state.user) {
                 state.user.following = action.payload.following;
@@ -93,25 +96,57 @@ export const authSlice = createSlice({
         setFriendFollowers: (state, action) => {
             state.friendFollowers = action.payload?.followers;
         },
+        
+        
         setUpdateFriendFollowers: (state, action) => {
             // state.friendFollowers = action.payload?.followers;
             console.log(state.friendFollowers, "><><><<>");
         },
+        
+        
         setFriendFollowing: (state, action) => {
             state.friendFollowing = action.payload?.following;
         },
 
+        
+        
         setUpdate: (state, action) => {
             state.user = action.payload;
             state.user.following = state.following
             state.user.followers = state.followers
         },
+
+
+        setChatUsers: (state, action) => {
+            state.chatUsers = action.payload.user
+        }
     },
+
+
+   
+
 
 
   });
 
-export const {setMode,setLogin,setLogout,setAdminLogin,setAdminLogout,setPost,setPosts,setUpdatePost,deleteUpdate,setFollowers,setFollowing,setFriendFollowing,setFriendFollowers,setUpdateFriendFollowers,setUpdate}=authSlice.actions
+export const {
+
+    setMode,
+    setLogin,
+    setLogout,
+    setAdminLogin,
+    setAdminLogout,
+    setPost,
+    setPosts,
+    setUpdatePost,
+    deleteUpdate,
+    setFollowers,
+    setFollowing,
+    setFriendFollowing,
+    setFriendFollowers,
+    setUpdateFriendFollowers,
+    setUpdate , 
+    setChatUsers } = authSlice.actions
 
 export default authSlice.reducer;
 

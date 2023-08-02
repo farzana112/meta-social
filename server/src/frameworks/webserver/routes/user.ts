@@ -10,6 +10,7 @@ const userRouter=()=>{
     const router=express.Router();
 
   const controller = userController(userDbRepository, userRepositoryMongoDB);
+    router.get("/search",userAuthMiddleware,controller.searchUser)
     router.get("/getUsers",controller.getAllUsers)
     router.put("/:id/userHandle", controller.handleUser);
     router.get("/:id",userAuthMiddleware,controller.getUserById)
@@ -19,7 +20,8 @@ const userRouter=()=>{
     router.get("/:id/followers",userAuthMiddleware, controller.getUserFriends);
     router.get("/:id/following",userAuthMiddleware,controller.getUserFollowing)
     router.put("/:id/report",userAuthMiddleware,controller.reportUser)
-    router.get("/search",userAuthMiddleware,controller.searchUser)
+   
+
 
 
 

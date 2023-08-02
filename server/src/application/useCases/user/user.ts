@@ -128,4 +128,3 @@ export const allUsers = async (
     return result;
   };
 
-

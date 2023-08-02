@@ -6,6 +6,7 @@ import {
   Paper,
   Grid,
   Container,
+  Link
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,7 +17,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state/slice";
-import { register, login } from "../../api/AuthRequest/AuthRequest";
+import { register, login,googleLogin } from "../../api/AuthRequest/AuthRequest";
 
 const Auth = () => {
   let classes = useStyles();
@@ -49,6 +50,8 @@ const Auth = () => {
       toast.error(message);
     }
   };
+
+
 
   const getValidationSchema = () => {
     if (isSignup) {
@@ -123,8 +126,28 @@ const Auth = () => {
     formik.resetForm();
   };
 
- 
+  const handleForgotPasswordClick = () => {
+    navigate('/forgot-password');
+  };
 
+ 
+const handleGoogleLogin = async()=>{
+ await signInWithPopup(auth,provider).then(async (UserCredentials)=>{
+  const result = await googleLogin(UserCredentials.user,handleToast);
+  if (result.status === "success") {
+    dispatch(setLogin(result));
+    navigate("../home", { replace: true });
+  } else {
+    handleToast("Something went wrong", "error");
+  }
+ }).catch((e)=>{
+  console.error("Google authentication failed:", e);
+
+  handleToast("Something went wrong", e);
+
+ })
+}
+ 
   
   return (
     <Container
@@ -157,6 +180,7 @@ const Auth = () => {
         <Typography component='h1' variant='h5'>
           {isSignup ? "Sign up" : "Sign in"}
         </Typography>
+        
         <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             {isSignup && (
@@ -250,12 +274,12 @@ const Auth = () => {
           >
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
-
-         
+          
 
           <Grid container justifyContent='space-between'>
 
-{/* <Button onClick={handleGoogleLogin}>Login with Google</Button> */}
+          <Button onClick={handleGoogleLogin}>Login with Google</Button>
+
           
             <Grid item>
               <Button onClick={switchMode}>
@@ -263,6 +287,9 @@ const Auth = () => {
                   ? "Already have an account? Log In"
                   : "New user? Sign Up"}
               </Button>
+              <Grid item>
+       
+        </Grid> 
             </Grid>
           </Grid>
         </form>

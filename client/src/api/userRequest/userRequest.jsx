@@ -20,7 +20,7 @@ export const getAUser = async (userId,token) => {
 
   export const followReq = async (id, friendId, token) => {
     try {
-      console.log("response from followReq")
+      
       const response = await API.put(
         `api/user/${friendId}/follow`,
         { id: id },
@@ -29,7 +29,7 @@ export const getAUser = async (userId,token) => {
         }
       );
       const data = await response.data.result;
-      console.log(data)
+     
       return data;
     } catch (error) {
       // Handle error
@@ -50,9 +50,9 @@ export const getAUser = async (userId,token) => {
         }
       );
 
-      console.log(response)
+      
       const data = await response.data.result;
-      console.log(data)
+     
       return data;
     } catch (error) {
       // Handle error
@@ -67,8 +67,7 @@ export const getAUser = async (userId,token) => {
       const response = await API.get(`api/user/${userId}/followers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("foem the try block");
-      console.log(response)
+     
       const data = await response.data;
       return data.followers;
     } catch (error) {
@@ -78,7 +77,7 @@ export const getAUser = async (userId,token) => {
   };
   export const getFollowing = async (userId, token) => {
     try {
-      console.log("getFollowing")
+      
       const response = await API.get(`api/user/${userId}/following`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -135,6 +134,8 @@ export const getAUser = async (userId,token) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.data.result;
+      console.log("data from frint end")
+      console.log(data)
       return data;
     } catch (error) {
       console.error("Error fetching user:", error);

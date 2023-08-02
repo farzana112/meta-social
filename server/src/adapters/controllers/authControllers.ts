@@ -12,11 +12,13 @@ import {
   userRegister,
   userLogin,
   adminlogin,
-  sendMail
+  sendMail,
+  verifyOtp,
+  googleLogin
  } from "../../application/useCases/auth/userAuth";
 import { log } from "console";
 import Otp from "../../frameworks/database/Mongodb/models/otpModel";
-
+import User from "../../frameworks/database/Mongodb/models/userModel"
 const authController=( 
     authServiceInterface:AuthServiceInterface,
     authServieImpl:AuthService,
@@ -91,35 +93,93 @@ const authController=(
       const emailSend =asyncHandler(async ( req: Request , res:Response) => {
         const { email } : { email : string } =
         req.body
-        
+       
         const token = await sendMail (
           email,
           dbRepositoryUser,
           authService
         )
         
-        console.log(token.token)
-       const otp=getMailService(email)
-       console.log("otp"+otp)
+        
+     
+        const verifyToken=token.token
+        const userId=token.user._id
+      
+       const otp=getMailService(email,verifyToken,userId)
+       
        const otpDocument = new Otp({
         email: email,
         otp: otp,
         token: token.token, // Make sure you have the 'token' value available
       });
       await otpDocument.save();
+
+      const setUserToken=await User.findByIdAndUpdate(
+        { _id:userId},
+        {verifyToken:verifyToken},
+        {new:true}
+      )
       
         res.json({
           status:"success",
          otp:otp,
-          token
+          token,
+          verifyToken
         })
       })
+
+      const otpVerify= asyncHandler(async (req:Request , res:Response) => {
+        const {otp} : {otp:number} = req.body
+        console.log("req bdoy ")
+        console.log(otp) 
+        const user= await verifyOtp (
+          otp,
+          dbRepositoryUser,
+          authService
+        )
+
+        console.log("user from authcontrolelr")
+        console.log(user)
+
+        res.json({
+          status:"success",
+         otp:otp,
+         user
+        })
+
+
+        
+      })
+
+
+      const googleLoginUser = asyncHandler(async (req: Request, res: Response) => {
+    
+        // const firstName = req.body?.displayName.split(" ")[0];
+        const userName: string = req.body?.displayName;
+        const name: string = req.body?.displayName;
+        const email: string = req.body?.email;
+        const token = await googleLogin(
+          userName,
+          name,
+          email,
+          dbRepositoryUser,
+          authService
+        );
+        console.log(token)
+        res.json({
+          status: "success",
+          message: "new user registered",
+          token: token,
+        });
+      });
       
       return{
         registerUser,
         loginUser,
         adminLogin,
-        emailSend
+        emailSend,
+        otpVerify,
+        googleLoginUser
       }
 
 }

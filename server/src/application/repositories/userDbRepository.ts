@@ -36,6 +36,9 @@ const getAllUsers=async()=>
     const sendMail=async(email:string) => 
       await repository.sendMail(email);
     
+      const verifyOtp=async(otp:number) => 
+        await repository.verifyOtp(otp)
+      
 
     const updateProfile = async (
       id: string,
@@ -69,6 +72,7 @@ const getAllUsers=async()=>
     const reportUser = async (id:string,userId:string,reason:string) => 
     await repository.reportUser(id,userId,reason)
 
+   
     const userSearch = async (name: string) => await repository.userSearch(name);
 
     
@@ -87,7 +91,10 @@ const getAllUsers=async()=>
         followersList,
         followingList,
         reportUser,
-        userSearch
+        userSearch,
+        verifyOtp
+   
+       
     
       }
     }

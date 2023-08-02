@@ -112,9 +112,9 @@ export const userRegister = async (
     userRepository:ReturnType<UserDbInterface>,
     authService:ReturnType<AuthServiceInterface>
   ) => {
+    console.log("email form usecase   :    ",email)
     const user : any = await userRepository.sendMail(email)
-    console.log("user from useCase")
-     console.log(user)
+   
     if (!user) {
       throw new AppError("This user does not exist", HttpStatus.UNAUTHORIZED);
     }
@@ -123,5 +123,52 @@ export const userRegister = async (
     return { token, user };
   }
 
+  export const verifyOtp = async (
+    otp:number,
+    userRepository:ReturnType<UserDbInterface>,
+    authService:ReturnType<AuthServiceInterface>
+  ) => {
+    console.log("otp from usecase2",otp)
+    const user:any = await userRepository.verifyOtp(otp)
+
+    if (!user) {
+      throw new AppError("This user does not exist", HttpStatus.UNAUTHORIZED);
+    }
+    return user
+  }
+
+  export const googleLogin = async (
+    userName: string,
+    name: string,
+    email: string,
+    userRepository: ReturnType<UserDbInterface>,
+    authService: ReturnType<AuthServiceInterface>
+  ) => {
+    const user = {
+      userName,
+      name,
+      email,
+      age:30
+      
+    };
+    const isUserExist = await userRepository.getUserByEmail(email);
+    if (isUserExist.isBlocked) {
+      throw new AppError(
+        "Sorry, your account is blocked by admin",
+        HttpStatus.UNAUTHORIZED
+      );
+    }
+    if (isUserExist) {
+      const token = authService.generateToken(isUserExist._id.toString());
+      return { token, user: isUserExist };
+    } else {
+      const userDetails = await userRepository.addUser(user);
+      const token = authService.generateToken(userDetails._id.toString());
+      return { token, user: userDetails };
+    }
+  };
+  
+
+  
 
 

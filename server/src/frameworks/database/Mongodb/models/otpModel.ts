@@ -6,7 +6,7 @@ const otpSchema = new Schema(
     email: {
         type: String,
         required: true,
-        unique:true
+        
       },
       otp:{
         type:Number
@@ -14,7 +14,7 @@ const otpSchema = new Schema(
      
       token: {
         type:String,
-        expires:300
+        expires:30
       }
       
     })

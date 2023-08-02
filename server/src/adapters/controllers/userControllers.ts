@@ -5,7 +5,7 @@ import {  AuthServiceInterface } from "../../application/services/authServicInte
 import { UserDbInterface } from "../../application/repositories/userDbRepository";
 // import { userRepositoryMongoDB } from "../../frameworks/database/Mongodb/repositories/userRepository";
 import { UserRepositoryMongoDB } from "../../frameworks/database/Mongodb/repositories/userRepository";
-import { allUsers,userHandle,getAUser,profileUpdate,followUser,followersList , followingList  , unFollowUser , userReport , userSearch} from "../../application/useCases/user/user";
+import { allUsers,userHandle,getAUser,profileUpdate,followUser,followersList , followingList  , unFollowUser , userReport ,userSearch } from "../../application/useCases/user/user";
 import { UserInfo } from "os";
 
 
@@ -71,7 +71,7 @@ const userController=(
         const { friendId } = req.params;
         const { id } = req.body;
         const result = await followUser(id, friendId, dbRepositoryUser);
-      console.log(result)
+      
         res.json({
           status: "success",
           message: "follow request successfully",
@@ -82,11 +82,10 @@ const userController=(
       
       const putUnFollowUser = asyncHandler(async (req: Request, res: Response) => {
         const { friendId } = req.params;
-        console.log("dhgfhghsgfgsgfgfsf" , friendId)
+ 
         const { id } = req.body;
         const result = await unFollowUser(id, friendId, dbRepositoryUser);
-        console.log("result")
-        console.log(result)
+        
         res.json({
           status: "success",
           message: "unfollow request successfully",
@@ -97,10 +96,9 @@ const userController=(
 
       const getUserFriends = asyncHandler(async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log("id    :     "+ id)
+        
         const followers = await followersList(id, dbRepositoryUser);
-        console.log("followers");
-        console.log(followers)
+        
         res.json({
           status: "success",
           followers,
@@ -109,10 +107,9 @@ const userController=(
 
       const getUserFollowing = asyncHandler(async (req: Request, res: Response) => {
         const { id } = req.params;
-        console.log(id)
+       
         const following = await followingList(id, dbRepositoryUser);
-        console.log("controllers")
-        console.log(following)
+       
         res.json({
           status: "success",
           following,
@@ -133,6 +130,7 @@ const userController=(
 
       const searchUser = asyncHandler(async (req: Request, res: Response) => {
         const { name } = req.query;
+  
         if (!name) {
           // Return empty result
           res.json({
@@ -145,10 +143,13 @@ const userController=(
         const result = await userSearch(name, dbRepositoryUser);
         res.json({
           status: "success",
-          message: "searched item found",
+          message: "follow request successfully",
           result,
         });
       });
+    
+
+    
     
       return {
         getAllUsers,
@@ -161,6 +162,7 @@ const userController=(
         getUserFollowing,
         reportUser,
         searchUser
+        
         
       }
 

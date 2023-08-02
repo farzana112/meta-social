@@ -20,12 +20,15 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PostAddIcon from "@mui/icons-material/PostAdd";
+import { DashboardCustomizeOutlined } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Grid} from "@mui/material"
 import UserTable from "../../components/AdminTable/UserTable";
+import PostTable from "../../components/AdminTable/PostTable"
 import { useDispatch } from "react-redux";
 import { setAdminLogout } from "../../state/slice";
+import Dashboard from "../../components/Dashboard/Dashboard";
 
 
 const drawerWidth = 240;
@@ -212,6 +215,20 @@ const AdminHome = () => {
             <UserTable />
           </Grid>
         </Grid>
+
+        case "post" :
+          return <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <PostTable/>
+            </Grid>
+          </Grid>
+
+          case "dashboard" : 
+          return <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Dashboard/>
+          </Grid>
+        </Grid>
   
         default:
           return null;
@@ -264,6 +281,20 @@ const AdminHome = () => {
                 <AccountCircleIcon />
               </ListItemIcon>
               <ListItemText primary="User" />
+            </ListItemButton>
+
+            <ListItemButton onClick={() => handleTabChange("post")}>
+              <ListItemIcon>
+                <PostAddIcon />
+              </ListItemIcon>
+              <ListItemText primary="Post" />
+            </ListItemButton>
+
+            <ListItemButton onClick={() => handleTabChange("dashboard")}>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Post" />
             </ListItemButton>
           </List>
           <Divider />

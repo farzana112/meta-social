@@ -58,6 +58,7 @@ const PostWidget = ({
   report,
   buttonclicked,
   isProfile,
+  socket
 }) => {
   const [isComments, setIsComments] = useState(false);
   const [isDeleteVisible, setIsDeleteVisible] = useState(false);
@@ -105,6 +106,12 @@ const PostWidget = ({
     const result = await commentAdd(loggedUserId, postId, comment, token);
     dispatch(setPost({ post: result }));
     setCommentInput("");
+    socket.emit("sendNotification", {
+      senderName: userName,
+      receiverId: postUserId,
+      postId: postId,
+      type: "commented",
+    });
   };
 
   const handleDeleteComment = async (index, userId) => {
@@ -168,6 +175,12 @@ const PostWidget = ({
     const result = await getLike(token, postId, loggedUserId);
     dispatch(setPost({ post: result.likedPost }));
     buttonclicked();
+    socket.emit("sendNotification", {
+      senderName: userName,
+      receiverId: postUserId,
+      postId: postId,
+      type: "liked",
+    });
   };
 
   const [showMore, setShowMore] = useState(false);

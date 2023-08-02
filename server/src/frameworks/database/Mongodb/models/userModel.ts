@@ -61,6 +61,10 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
+
+    verifyToken:{
+      type:String
+    },
    
 
     report:[]

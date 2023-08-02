@@ -1,66 +1,121 @@
-import React from 'react'
-import {useState} from "react"
-import { 
-    Box,
-    IconButton,
-    InputBase,
-    Typography,
-    Select,
-    MenuItem,
-    FormControl,
-    useTheme,
-    useMediaQuery,
-    Tooltip,
-    CircularProgress,
-    Popover
-} from "@mui/material"
+
+
+
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import {
-    Search,
-    Message,
-    DarkMode,
-    LightMode,
-    Notifications,
-    Help,
-    Menu,
-    Close,
-    
-} from "@mui/icons-material"
-import { userSearch } from '../../api/userRequest/userRequest'
-import { useDispatch,useSelector } from "react-redux"
-import { setMode,setLogout } from "../../state/slice"
-import { useNavigate } from "react-router-dom"
-import FlexBetween from '../../components/FlexBetween'
-import AdminLogin from "../AdminLogin/AdminLogin"
-const Navbar = () => {
-  
+  Box,
+  IconButton,
+  InputBase,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  useTheme,
+  useMediaQuery,
+  Tooltip,
+  CircularProgress,
+  Popover,
+  Button,
+  Badge,
+} from "@mui/material";
+import {
+  Search,
+  Message,
+  DarkMode,
+  LightMode,
+  Notifications,
+  Help,
+  Menu,
+  Close,
+} from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode, setLogout } from "../../state/slice";
+import { useNavigate } from "react-router-dom";
+import FlexBetween from "../../components/FlexBetween";
+import debounce from "lodash.debounce";
+import { userSearch } from "../../api/userRequest/userRequest";
+
+const Navbar = ({ socket }) => {
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const admin=useSelector((state)=>state.admin)
+  const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-const theme=useTheme()
-const neutralLight=theme.palette.neutral.light;
-const dark=theme.palette.neutral.dark
-const background=theme.palette.background.default
-const primaryLight=theme.palette.primary.light;
-const alt=theme.palette.background.alt 
 
-const fullName = `${user?.userName}`;
-const adminName=`${admin?.userName}`
+  const theme = useTheme();
+  const neutralLight = theme.palette.neutral.light;
+  const dark = theme.palette.neutral.dark;
+  const background = theme.palette.background.default;
+  const primaryLight = theme.palette.primary.light;
+  const alt = theme.palette.background.alt;
+  const [notifications, setNotifications] = useState([]);
+  const openNotificationPopover = (event) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
 
+  const closeNotificationPopover = () => {
+    setNotificationAnchorEl(null);
+  };
 
+  const isNotificationPopoverOpen = Boolean(notificationAnchorEl);
+  const displayNotification = ({ senderName, type }) => {
+    let action;
 
-const searchUser = (event) => {
-  const inputValue = event.target.value;
-  handleQueryChange(inputValue);
-};
+    if (type === "liked") {
+      action = "liked";
+    } else if (type === "commented") {
+      action = "commented";
+    } else {
+      action = "shared";
+    }
+    return (
+      <span className='notification'>{`${senderName} ${action} on your post.`}</span>
+    );
+  };
 
+  useEffect(() => {
+    socket?.on("getNotifications", (data) => {
+      const isDuplicate = notifications.some(
+        (item) => item.postId === data.postId
+      );
 
-return (
+      if (!isDuplicate) {
+        setNotifications((prev) => [...prev, data]); // Update notifications state with the received data
+      } // Update notifications state with the received data
+    });
+  }, [socket]);
+  const hasUnreadNotifications = notifications.length > 0;
+  const handleUser = (userId) => {
+    setLoading(true);
+    setSuggestions([]);
+    navigate(`/profile/${userId}`);
+    setLoading(false);
+  };
+  const fullName = `${user?.userName}`;
+
+  const handleQueryChange = debounce(async (newQuery) => {
+    try {
+      const response = await userSearch(newQuery, token);
+      setSuggestions(response);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setLoading(false);
+    }
+  }, 500); // Adjust the debounce delay (in milliseconds) as needed
+
+  const searchUser = (event) => {
+    const inputValue = event.target.value;
+    handleQueryChange(inputValue);
+  };
+
+  return (
     <Box sx={{ position: "fixed", minWidth: "100%", zIndex: "2" }}>
       <FlexBetween padding='1rem 6%' backgroundColor={alt}>
         <FlexBetween gap='1.75rem'>
@@ -76,7 +131,7 @@ return (
               },
             }}
           >
-            Meta Social
+            MetaSocial
           </Typography>
           {isNonMobileScreens && (
             <Box sx={{ position: "relative", width: "300px" }}>
@@ -86,7 +141,7 @@ return (
                 gap='3rem'
                 padding='0.1rem 1.5rem'
               >
-                <InputBase placeholder='Search...' />
+                <InputBase placeholder='Search...' onKeyUp={searchUser} />
                 <IconButton>
                   <Tooltip title='Search user' placement='bottom'>
                     <Search />
@@ -112,7 +167,7 @@ return (
                   {suggestions.map((suggestion) => (
                     <Typography
                       key={suggestion._id}
-                      
+                      onClick={() => handleUser(suggestion._id)}
                       sx={{
                         py: "0.5rem",
                         px: "1rem",
@@ -131,9 +186,9 @@ return (
             </Box>
           )}
         </FlexBetween>
-{/* 
-        NOTIFICATION POPOVER */}
-        {/* <Popover
+
+        {/* NOTIFICATION POPOVER */}
+        <Popover
           open={isNotificationPopoverOpen}
           anchorEl={notificationAnchorEl}
           onClose={closeNotificationPopover}
@@ -203,7 +258,7 @@ return (
               </div>
             )}
           </Box>
-        </Popover> */}
+        </Popover>
 
         {/* DESKTOP NAV */}
         {isNonMobileScreens ? (
@@ -227,7 +282,7 @@ return (
               />
             </Tooltip>
             <Tooltip title='Notification' placement='bottom'>
-              {/* <IconButton
+              <IconButton
                 sx={{ fontSize: "25px" }}
                 onClick={openNotificationPopover}
               >
@@ -238,7 +293,7 @@ return (
                 ) : (
                   <Notifications sx={{ fontSize: "25px" }}/>
                 )}
-              </IconButton> */}
+              </IconButton>
             </Tooltip>
             <Tooltip title='Help' placement='bottom'>
               <Help sx={{ fontSize: "25px" }} />
@@ -264,11 +319,6 @@ return (
                 <MenuItem value={fullName}>
                   <Typography>{fullName}</Typography>
                 </MenuItem>
-                <MenuItem >
-                <Typography>My Profile</Typography>
-                
-                </MenuItem>
-
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out
                 </MenuItem>
@@ -365,7 +415,7 @@ return (
                 >
                   <MenuItem value={fullName}>
                     <Typography>{fullName}</Typography>
-                  </MenuItem> 
+                  </MenuItem>
                   <MenuItem onClick={() => dispatch(setLogout())}>
                     Log Out
                   </MenuItem>
@@ -377,8 +427,6 @@ return (
       </FlexBetween>
     </Box>
   );
+};
 
- 
-}
-
-export default Navbar
+export default Navbar;

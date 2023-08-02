@@ -23,6 +23,7 @@
   import UserImage from "../../components/UserImage/UserImage";
   import FlexBetween from "../../components/FlexBetween"
   import WidgetWrapper from "../../components/Widget/WidgetWrapper";
+  import { addChat } from "../../api/ChatRequest/ChatRequest";
 
   import {
     followReq,
@@ -90,12 +91,12 @@
       handleEffect();
     };
 
-    // const handleMessage = async () => {
-    //   const chat = await addChat(user._id, userData._id, token);
-    //   if (chat) {
-    //     navigate("/chat");
-    //   }
-    // };
+    const handleMessage = async () => {
+      const chat = await addChat(user._id, userData._id, token);
+      if (chat) {
+        navigate("/chat");
+      }
+    };
 
     const [openReportDialog, setOpenReportDialog] = useState(false);
     const [reportReason, setReportReason] = useState("");
@@ -161,6 +162,7 @@
                 <Button
                   variant='outlined'
                   startIcon={<MessageOutlined />}
+                  onClick={handleMessage}
                 
                   sx={{ marginTop: "0.5rem" }}
                 >

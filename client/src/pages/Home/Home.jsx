@@ -7,6 +7,8 @@ import MyPostWidget from "../../pages/Widgets/MyPost"
 import FriendListWidget from "../../components/Widget/FriendList"; 
 import { useSelector} from "react-redux"
 import { useState, useEffect} from "react"
+import { io } from "socket.io-client";
+
 const HomePage=()=>{
   const{ _id,displayPicture}=useSelector((state)=>state.user)
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -15,9 +17,24 @@ const [click,setClick] = useState(false)
 const handleClick = () =>{
   setClick(!click)
 }
+
+useEffect(()=>{
+
+},[click])
+
+const socket = io("http://localhost:5000")
+
+useEffect(()=>{
+  socket?.emit("new-user-add",user._id)
+ 
+ },[socket,user])
+ 
+ 
+
+
     return ( 
     <Box>
-      <Navbar/>
+      <Navbar socket={socket}/>
       
       <Box
         width='100%'
@@ -37,7 +54,7 @@ const handleClick = () =>{
           
         >
         <MyPostWidget picturePath={displayPicture} handleClick={handleClick} />
-        <PostsWidget click={click}  userId={_id} />
+        <PostsWidget click={click}  userId={_id} socket={socket} />
         
           
         </Box>

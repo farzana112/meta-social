@@ -22,6 +22,9 @@ const authRouter=()=>{
      router.post("/login",controller.loginUser)
      router.post('/adminLogin',controller.adminLogin)
      router.post('/send-email',controller.emailSend)
+     router.post("/verify-otp",controller.otpVerify)
+    router.post('/googleLogin',controller.googleLoginUser)
+
     return router
 }
 

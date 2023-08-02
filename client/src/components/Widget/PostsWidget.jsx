@@ -12,7 +12,7 @@ import {
 } 
 from "@mui/material"
 
-const PostsWidget=  ({click,userId,isProfile =false})  =>
+const PostsWidget=  ({click,userId,isProfile =false,socket})  =>
  {
 
    const dispatch=useDispatch();
@@ -93,6 +93,7 @@ const userPosts = async () => {
             report={report}
             buttonclicked={buttonclicked}
             isProfile={isProfile ? isProfile : false}
+            socket={socket}
             
           />
         )

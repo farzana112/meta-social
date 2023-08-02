@@ -1,7 +1,7 @@
 import configKeys from "../../config";
 import Mailgen from "mailgen"
 import nodemailer from "nodemailer"
-export const getMailService = (userEmail:string) =>{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+export const getMailService = (userEmail:string,verifyToken:string,userId:string) =>{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 let config = {
      
     service:"gmail",
@@ -31,19 +31,26 @@ let MailGenerator = new Mailgen({
 let otp=generateOTP()
 let response = {
     
+    
     body: {
         name : "Friend",
-        intro: "Your OTP To rest the password is" + otp,
+        intro: "Your link To reset the password is" ,
         table : {
             data : [
+                
                 {
-                    OTP:otp
+                    // link:`http://localhost:5173/reset-password/${userId}/${verifyToken}`
+                // text:`This Link Valid For 2 MINUTES http://localhost:5000/reset-password/${userId}/${verifyToken}`
+             link : "This Link Valid For 2 MINUTES http://localhost:5173/reset-password/" + userId + "/" + verifyToken
+
+
                 }
             ]
         },
         outro: "Looking forward to do more business"
     }
 }
+
 
 let mail = MailGenerator.generate(response)
 
