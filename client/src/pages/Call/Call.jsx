@@ -22,6 +22,9 @@ const CallPage = () => {
   const myMeeting = async (element) => {
     const appID = parseInt(configKeys.appID);
     const serverSecret = configKeys.ServerSecret;
+    console.log("app Id")
+    console.log(appID)
+    console.log(serverSecret)
     
     
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(

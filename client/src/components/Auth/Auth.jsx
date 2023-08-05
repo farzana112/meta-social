@@ -18,6 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../state/slice";
 import { register, login,googleLogin } from "../../api/AuthRequest/AuthRequest";
+import { signInWithPopup } from "firebase/auth";
+import { auth,provider } from "../../api/firebase/firebaseConfig"
 
 const Auth = () => {
   let classes = useStyles();
