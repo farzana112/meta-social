@@ -1,8 +1,7 @@
 import axios from "axios";
-import { parseCookies} from "cookie"
 
 const instance = axios.create({
-  baseURL: "http://metasocial.cloud",
+  baseURL: "https://metasocial.cloud",
   // Add any other default configuration options you need
 });
 
