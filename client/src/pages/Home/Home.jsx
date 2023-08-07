@@ -22,7 +22,7 @@ useEffect(()=>{
 
 },[click])
 
-const socket = io("http://localhost:5000")
+const socket = io("http://metasocial.cloud")
 
 useEffect(()=>{
   socket?.emit("new-user-add",user._id)
