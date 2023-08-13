@@ -27,6 +27,7 @@
     "nodemon": "^2.0.22",
     "socket.io": "^4.7.1",
     "ts-node": "^10.9.1",
+    "typescript": "^5.1.6",
     "uuid": "^9.0.0"
   },
   "name": "server",
@@ -34,8 +35,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/app.ts",
-    "build": "tsc -w",
-    "dev": "nodemon ./src/app.ts"
+    "build": "rm -rf build && tsc"    
   },
   "keywords": [],
   "author": "",
