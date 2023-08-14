@@ -2,8 +2,9 @@ import API from "../instance";
 export const createPost = async (token, formData) => {
     try {
       const response = await API.post("api/post/", formData, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` ,
         "Content-Type": "multipart/form-data",
+      },
       });
       return response.data;
     } catch (error) {

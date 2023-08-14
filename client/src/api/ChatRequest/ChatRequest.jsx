@@ -8,7 +8,7 @@ export const userChats = async (token, id) => {
     return response.data;
   } catch (error) {
     // Handle error
-    console.error("Error creating post:", error);
+    console.error("Error creating chat:", error);
     throw error;
   }
 };

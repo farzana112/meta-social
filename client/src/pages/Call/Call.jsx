@@ -40,7 +40,7 @@ const CallPage = () => {
       sharedLinks: [
         {
           name: "Copy Link",
-          url: `http://localhost:5173/room/${roomId}`,
+          url: `https://metasocial.cloud/${roomId}`,
         },
       ],
       scenario: {

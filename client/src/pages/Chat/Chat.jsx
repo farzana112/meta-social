@@ -23,9 +23,11 @@ const Chat = () => {
   const [sendMessage, setSendMessage] = useState(null);
   const [receiveMessage, setReceiveMessage] = useState(null);
 
-  // Send Message to socket server
 
-  // Connect to Socket.io
+
+  
+
+  
   useEffect(() => {
     socket.current = io("https://metasocial.cloud");
     socket.current.emit("new-user-add", user._id);
