@@ -1,7 +1,10 @@
 import API from "../instance";
 
 export const register = async (formData, onSubmitProps, handleToast) => {
+  console.log(formData);
+  console.log("formData")
   try {
+
     const response = await API.post("/api/auth/register", formData);
     
     console.log(response.data)

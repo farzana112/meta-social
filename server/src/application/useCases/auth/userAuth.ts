@@ -35,9 +35,9 @@ export const userRegister = async (
       HttpStatus.UNAUTHORIZED
     );
   }
-  if(isAdult){
+  if(user.age<18){
     throw new AppError(
-      "You are not eligible to use this app",
+      "You are not age to use this app",
       HttpStatus.BAD_REQUEST
     )
   }
