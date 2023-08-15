@@ -21,7 +21,7 @@ const jwtSecret = randomBytes(32).toString('hex');
 
 const io = new Server(server,{
     cors:{
-        origin:['https://metasocial.cloud'],
+        origin:['*'],
         methods:["GET","POST"]
     }
 });
