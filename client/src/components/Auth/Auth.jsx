@@ -30,38 +30,38 @@ const Auth = () => {
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
-  // const handleSubmit = async (values, onSubmitProps) => {
-  //   if (isSignup) {
-  //     const userData = await register(values, onSubmitProps, handleToast);
-  //     if (userData.status === "success") {
-  //       dispatch(setLogin(userData));
-  //       navigate("../home", { replace: true });
-  //     } else {
-  //       handleToast("Something went wrong", "error");
-  //     }
-  //   } else {
-  //     const userData = await login(values, onSubmitProps, handleToast);
-  //     dispatch(setLogin(userData));
-  //     navigate("../home", { replace: true });
-  //   }
-  // };
-
   const handleSubmit = async (values, onSubmitProps) => {
-    try {
-      if (isSignup) {
-        const userData = await register(values, onSubmitProps, handleToast);
-        // Rest of your code
+    if (isSignup) {
+      const userData = await register(values, onSubmitProps, handleToast);
+      if (userData.status === "success") {
+        dispatch(setLogin(userData));
+        navigate("../home", { replace: true });
       } else {
-        const userData = await login(values, onSubmitProps, handleToast);
-        // Rest of your code
+        handleToast("Something went wrong", "error");
       }
-    } catch (error) {
-      console.error("Error in handleSubmit:", error);
-      console.error("Response Data:", error.response.data);
-
-      // Handle the error appropriately, e.g., show an error message
+    } else {
+      const userData = await login(values, onSubmitProps, handleToast);
+      dispatch(setLogin(userData));
+      navigate("../home", { replace: true });
     }
   };
+
+  // const handleSubmit = async (values, onSubmitProps) => {
+  //   try {
+  //     if (isSignup) {
+  //       const userData = await register(values, onSubmitProps, handleToast);
+  //       // Rest of your code
+  //     } else {
+  //       const userData = await login(values, onSubmitProps, handleToast);
+  //       // Rest of your code
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in handleSubmit:", error);
+  //     console.error("Response Data:", error.response.data);
+
+  //     // Handle the error appropriately, e.g., show an error message
+  //   }
+  // };
   
   const handleToast = (message, type) => {
     if (type === "success") {
