@@ -46,22 +46,6 @@ const Auth = () => {
     }
   };
 
-  // const handleSubmit = async (values, onSubmitProps) => {
-  //   try {
-  //     if (isSignup) {
-  //       const userData = await register(values, onSubmitProps, handleToast);
-  //       // Rest of your code
-  //     } else {
-  //       const userData = await login(values, onSubmitProps, handleToast);
-  //       // Rest of your code
-  //     }
-  //   } catch (error) {
-  //     console.error("Error in handleSubmit:", error);
-  //     console.error("Response Data:", error.response.data);
-
-  //     // Handle the error appropriately, e.g., show an error message
-  //   }
-  // };
   
   const handleToast = (message, type) => {
     if (type === "success") {
