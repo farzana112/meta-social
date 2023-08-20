@@ -29,7 +29,7 @@ const Chat = () => {
 
   
   useEffect(() => {
-    socket.current = io("https://metasocial.cloud");
+    socket.current = io("https://metasocial.cloud/api");
     console.log("useEffect")
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {
