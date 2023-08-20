@@ -7,16 +7,23 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
+// import { useLocation, useHistory } from "react-router-dom";
 import { getAllUsers, userHandle } from "../../api/AdminRequest/AdminRequest";
 import { useSelector } from "react-redux";
 import Pagination from "@mui/material/Pagination";
 import { Button, CircularProgress, Skeleton } from "@mui/material";
 import { TextField, Grid, Box } from "@mui/material";
-
+import queryString from "query-string"
 const UserTable = () => {
+  // const location = useLocation();
+  // const history = useHistory();
+  const [page, setPage] = useState(1);
+  const limit = 10; // Items per page
+  // const query = queryString.parse(location.search);
+
   const token = useSelector((state) => state.adminToken);
   const [users, setUsers] = useState([]);
-  const [page, setPage] = useState(1);
+  
   const [rowsPerPage] = useState(4);
   const [loading, setLoading] = useState(true);
   const [filterReported, setFilterReported] = useState(false);

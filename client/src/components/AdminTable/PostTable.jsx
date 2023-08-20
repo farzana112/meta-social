@@ -100,6 +100,8 @@ const PostTable = () => {
                   <TableCell>Total Likes</TableCell>
                   <TableCell>Total Comments</TableCell>
                   <TableCell>Total Reports</TableCell>
+                  <TableCell>Report Reasons</TableCell>
+                  <TableCell>Reported By</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -139,6 +141,29 @@ const PostTable = () => {
                     <TableCell>{post.likes.length}</TableCell>
                     <TableCell>{post.comments.length}</TableCell>
                     <TableCell>{post.report.length}</TableCell>
+                    
+        {/* {post.report.map((report, index) => (
+          <span key={index}>
+            {report.reason}
+            {index !== post.report.length - 1 && ", "}
+          </span>
+        ))} */}
+
+
+<TableCell>
+        {post.report.map((report, index) => (
+          <div key={index}>
+            <span>{report.reason}</span>
+          </div>
+        ))}
+      </TableCell>
+      <TableCell>
+        {post.report.map((report, index) => (
+          <div key={index}>
+            <span>{report.userId}</span>
+          </div>
+        ))}
+      </TableCell>
                     <TableCell>
                       <Button
                         onClick={() => handleDelete(post._id)}

@@ -354,15 +354,29 @@ export const userRepositoryMongoDB = () => {
 
  
       
-      const userSearch = async (name: string) => {
-        const user: any = await User.find({
-          name: { $regex: `^${name}`, $options: "i" },
-        });
+      // const userSearch = async (name: string) => {
+      //   const user: any = await User.find({
+      //     name: { $regex: `${name}`, $options: "i" },
+      //   });
       
     
-        return user;
-      };
+      //   return user;
+      // };
      
+
+      const userSearch = async (name: string) => {
+        try {
+          const users = await User.find({
+            name: { $regex: `.*${name}.*`, $options: "i" },
+          });
+         console.log(users)
+          return users;
+        } catch (error) {
+          console.error("Error searching users:", error);
+          throw error;
+        }
+      };
+      
 
 return{
   addUser,
