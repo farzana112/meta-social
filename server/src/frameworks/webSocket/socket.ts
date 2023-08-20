@@ -29,15 +29,19 @@ const socketConfig = (
   io.on("connection", (socket) => {
     console.log(`user connected ${socket.id}`);
     socket.on("new-user-add", (newUserId) => {
+      console.log("new user added")
       // if user is not added previously
       if (!activeUsers.some((user) => user.userId === newUserId)) {
         activeUsers.push({ userId: newUserId, socketId: socket.id });
         
       }
       // send all active users to new user
+      console.log(activeUsers)
       io.emit("get-users", activeUsers);
+      
     });
     socket.on("newUser", (user) => {
+      
       addNewUser(user?.userName, socket.id);
     });
 
