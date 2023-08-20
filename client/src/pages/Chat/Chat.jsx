@@ -33,6 +33,7 @@ const Chat = () => {
     console.log("useEffect")
     socket.current.emit("new-user-add", user._id);
     socket.current.on("get-users", (users) => {
+      console.log(users)
       setOnlineUsers(users);
 
     });
