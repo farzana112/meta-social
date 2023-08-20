@@ -25,7 +25,7 @@ const getUser = (username:string) => {
 const socketConfig = (
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 ) => {
-    console.log("sockrt")
+    console.log("socket")
   io.on("connection", (socket) => {
     console.log(`user connected ${socket.id}`);
     socket.on("new-user-add", (newUserId) => {
