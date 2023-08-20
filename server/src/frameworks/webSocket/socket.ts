@@ -8,7 +8,7 @@ let onlineUsers : any[]= [];
 const addNewUser = (username:string, socketId:string) => {
   !onlineUsers.some((user) => user.username === username) &&
     onlineUsers.push({ username, socketId });
-    console.log(onlineUsers,"::::::::");
+    console.log(onlineUsers,"::::::::!!!");
     
 };
 
