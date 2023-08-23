@@ -22,10 +22,11 @@ const server = http_1.default.createServer(app);
 const jwtSecret = (0, crypto_1.randomBytes)(32).toString('hex');
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: ['https://metasocial.cloud'],
+        origin: ['*'],
         methods: ["GET", "POST"]
     }
 });
+console.log("socket config");
 (0, socket_1.default)(io);
 //   database connection
 (0, Connection_1.default)();

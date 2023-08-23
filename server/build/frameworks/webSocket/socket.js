@@ -5,7 +5,7 @@ let onlineUsers = [];
 const addNewUser = (username, socketId) => {
     !onlineUsers.some((user) => user.username === username) &&
         onlineUsers.push({ username, socketId });
-    console.log(onlineUsers, "::::::::");
+    console.log(onlineUsers, "::::::::!!!");
 };
 const removeUser = (socketId) => {
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
@@ -14,14 +14,17 @@ const getUser = (username) => {
     return onlineUsers.find((user) => user.username === username);
 };
 const socketConfig = (io) => {
+    console.log("socket");
     io.on("connection", (socket) => {
         console.log(`user connected ${socket.id}`);
         socket.on("new-user-add", (newUserId) => {
+            console.log("new user added!");
             // if user is not added previously
             if (!activeUsers.some((user) => user.userId === newUserId)) {
                 activeUsers.push({ userId: newUserId, socketId: socket.id });
             }
             // send all active users to new user
+            console.log(activeUsers);
             io.emit("get-users", activeUsers);
         });
         socket.on("newUser", (user) => {

@@ -17,9 +17,14 @@ const userRegister = async (user, userRepository, authService) => {
     if (isExistingUserName) {
         throw new appError_1.default("This Username is already taken", httpStatus_1.HttpStatus.UNAUTHORIZED);
     }
-    if (isAdult) {
-        throw new appError_1.default("You are not eligible to use this app", httpStatus_1.HttpStatus.BAD_REQUEST);
-    }
+    // if (user.age < 18) {
+    //   console.log(user.age);
+    //   throw new AppError(
+    //     "You are not eligible to use this app",
+    //     HttpStatus.BAD_REQUEST
+    //   );
+    // }
+    // console.log(user.age)
     if (user.password.length <= 3) {
         throw new appError_1.default("Password Empty", httpStatus_1.HttpStatus.BAD_REQUEST);
     }

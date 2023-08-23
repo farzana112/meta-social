@@ -13,7 +13,10 @@ const authController = (authServiceInterface, authServieImpl, userDbRepository, 
     const authService = authServiceInterface(authServieImpl());
     const dbRepositoryAdmin = adminDbRepository(adminDbRepositoryImpl());
     const registerUser = (0, express_async_handler_1.default)(async (req, res) => {
+        console.log("Hi");
         const { name, userName, email, age, number, password } = req.body;
+        console.log(name, age, userName, email, number);
+        console.log(req.body);
         const user = {
             name,
             userName,

@@ -246,11 +246,31 @@ const userRepositoryMongoDB = () => {
             console.error(error);
         }
     };
+    // const userSearch = async (name: string) => {
+    //   const user: any = await User.find({
+    //     name: { $regex: `${name}`, $options: "i" },
+    //   });
+    //   return user;
+    // };
+    // const userSearch = async (name: string) => {
+    //   try {
+    //     const users = await User.find({
+    //       name: { $regex: `.*${name}.*`, $options: "i" },
+    //     });
+    //    console.log(users)
+    //     return users;
+    //   } catch (error) {
+    //     console.error("Error searching users:", error);
+    //     throw error;
+    //   }
+    // };
+    //   const userSearch = async(name:string) => {
+    //     const regexPattern = new RegExp(`${name}`, 'i');
+    //     return  await User.find({ userName: regexPattern });
+    // }
     const userSearch = async (name) => {
-        const user = await userModel_1.default.find({
-            name: { $regex: `^${name}`, $options: "i" },
-        });
-        return user;
+        const regexPattern = new RegExp(name, 'i');
+        return await userModel_1.default.find({ userName: regexPattern });
     };
     return {
         addUser,
