@@ -35,13 +35,17 @@ export const userRegister = async (
       HttpStatus.UNAUTHORIZED
     );
   }
-  // if(user.age<18){
-  //   console.log(user.age)
-  //   throw new AppError(
-  //     "You are not age to use this app",
-  //     HttpStatus.BAD_REQUEST
-  //   )
-  // }
+ 
+  if (user.age < 18) {
+    console.log(user.age);
+    
+    throw new AppError(
+      "You are not eligible to use this app",
+      HttpStatus.BAD_REQUEST
+    );
+  }
+  console.log(user.age)
+  
   if (user.password.length <= 3) {
     throw new AppError("Password Empty", HttpStatus.BAD_REQUEST);
   }

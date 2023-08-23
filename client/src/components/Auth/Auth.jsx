@@ -30,6 +30,28 @@ const Auth = () => {
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+  // const handleSubmit = async (values, onSubmitProps) => {
+  //   console.log("values")
+  //   console.log(values)
+  //   if (isSignup) {
+  //     const userData = await register(values, onSubmitProps, handleToast);
+  //     console.log(
+  //       "user data"
+  //     );
+  //     console.log(userData)
+  //     if (userData.status === "success") {
+  //       dispatch(setLogin(userData));
+  //       navigate("../home", { replace: true });
+  //     } else {
+  //       handleToast("Something went wrong", "error");
+  //     }
+  //   } else {
+  //     const userData = await login(values, onSubmitProps, handleToast);
+  //     dispatch(setLogin(userData));
+  //     navigate("../home", { replace: true });
+  //   }
+  // };
+
   const handleSubmit = async (values, onSubmitProps) => {
     if (isSignup) {
       const userData = await register(values, onSubmitProps, handleToast);
@@ -44,8 +66,7 @@ const Auth = () => {
       dispatch(setLogin(userData));
       navigate("../home", { replace: true });
     }
-  };
-
+  }
   
   const handleToast = (message, type) => {
     if (type === "success") {
@@ -85,6 +106,7 @@ const Auth = () => {
           .number()
           .positive("Age must be a positive number")
           .min(18, "Age must be at least 18")
+          .max(120, "Age must be less than or equal to 120")
           .required("required"),
 
         email: yup

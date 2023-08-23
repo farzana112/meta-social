@@ -11,7 +11,7 @@ instance.interceptors.request.use(
     const reduxState = localStorage.getItem("reduxState"); // Retrieve the token from storage
   const state=  JSON.parse(reduxState)
   const token= state?.payload?.token?.token
-  console.log("token !!"+token)
+  // console.log("token !!"+token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // Add the token to the request headers
     }

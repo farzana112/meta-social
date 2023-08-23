@@ -129,10 +129,16 @@ export const getAUser = async (userId,token) => {
 
   export const userSearch = async (name, token) => {
     try {
+      if(!name){
+        return []
+      }
+      const pattern = `.*${name}.*`;
       const response = await API.get(`api/user/search`, {
-        params: { name },
+        params: { name :pattern },
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("response frm search")
+      console.log(response)
       const data = await response.data.result;
       console.log("data from frint end")
       console.log(data)

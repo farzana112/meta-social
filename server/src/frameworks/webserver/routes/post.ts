@@ -5,6 +5,8 @@ import { userDbRepository } from "../../../application/repositories/userDbReposi
 import { postRepositoryImp } from "../../database/Mongodb/repositories/postRepository"
 import { userRepositoryMongoDB } from "../../database/Mongodb/repositories/userRepository"
 import { upload } from "../../services/multer";
+import  postMiddleware from "../middlewares/postMiddleware"
+
 
 const postRouter= () =>{
     const router=express.Router();
@@ -12,8 +14,8 @@ const postRouter= () =>{
     router.post("/",upload.array('picture',4),controller.createPost);
     router.get("/",controller.getPosts)
     router.get("/:userId",controller.getUserPost)
-    router.delete('/:id',controller.deletePost)
-    router.put("/:postId",controller.editPost)
+    router.delete('/:id',postMiddleware,controller.deletePost)
+    router.put("/:postId",postMiddleware,controller.editPost)
     router.put("/:postId/comment",controller.commentPost)
     router.put("/:postId/commentDelete",controller.commentDelete)
     router.put('/:id/like',controller.likePost)

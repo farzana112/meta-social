@@ -87,6 +87,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   
 
   const handleVideoCall = async () => {
+  //reload
     console.log("video call initiated")
     const roomUrl = `http://5173/room/${loggedId}`;
     const message = `Join this room to video chat: ${roomUrl}`;

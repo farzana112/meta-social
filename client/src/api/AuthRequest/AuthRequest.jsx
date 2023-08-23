@@ -1,12 +1,28 @@
 import API from "../instance";
 
+// export const register = async (formData, onSubmitProps, handleToast) => {
+//   console.log(formData);
+//   console.log("formData")
+//   try {
+
+//     const response = await API.post("/api/auth/register", formData);
+    
+//     console.log(response.data)
+//     return response.data;
+//   } catch (error) {
+//     // Handle error
+//     console.error("Error creating post:", error);
+//     handleToast(error.response.data.message, "error");
+//     throw error;
+//   }
+// };
+
 export const register = async (formData, onSubmitProps, handleToast) => {
-  console.log(formData);
-  console.log("formData")
   try {
+    console.log(formData)
+    console.log("response")
 
     const response = await API.post("/api/auth/register", formData);
-    
     console.log(response.data)
     return response.data;
   } catch (error) {

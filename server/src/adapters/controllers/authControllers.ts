@@ -34,8 +34,10 @@ const authController=(
     const authService=authServiceInterface(authServieImpl())
   const dbRepositoryAdmin=adminDbRepository(adminDbRepositoryImpl())
     const registerUser = asyncHandler(async (req: Request, res: Response) => {
-        
+        console.log("Hi")
         const { name, userName, email,age, number, password } = req.body;
+        console.log(name,age,userName,email,number)
+        console.log(req.body)
         const user = {
           name,
           userName,

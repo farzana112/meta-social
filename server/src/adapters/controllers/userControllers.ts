@@ -141,6 +141,7 @@ const userController=(
         }
     
         const result = await userSearch(name, dbRepositoryUser);
+        
         res.json({
           status: "success",
           message: "follow request successfully",

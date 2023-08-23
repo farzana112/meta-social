@@ -17,10 +17,13 @@ const userAuthMiddleware = (
     token = req.headers.authorization.split(" ")[1];
   }
   if (!token) {
+    console.log("no token")
     throw new AppError("Token not found", HttpStatus.UNAUTHORIZED);
   }
   try {
-    // const { payload }: any = authService().verifyToken(token);
+    const { payload }: any = authService().verifyToken(token);
+    console.log("payload")
+    console.log(payload)
 
     next();
   } catch (err) {
