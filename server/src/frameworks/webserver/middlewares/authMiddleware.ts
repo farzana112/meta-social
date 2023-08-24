@@ -21,6 +21,7 @@ const userAuthMiddleware = (
     throw new AppError("Token not found", HttpStatus.UNAUTHORIZED);
   }
   try {
+    console.log(token)
     const { payload }: any = authService().verifyToken(token);
     console.log("payload")
     console.log(payload)
