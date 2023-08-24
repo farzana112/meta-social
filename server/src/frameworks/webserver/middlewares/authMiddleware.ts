@@ -28,6 +28,7 @@ const userAuthMiddleware = (
 
     next();
   } catch (err) {
+    console.log(err)
     throw new AppError("UnAuthorized User", HttpStatus.UNAUTHORIZED);
   }
 };

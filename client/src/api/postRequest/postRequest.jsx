@@ -24,7 +24,9 @@ export const createPost = async (token, formData) => {
       console.log(data)
       return data;
     } catch (error) {
+
       // Handle error
+      
       console.error("Error getting posts:", error);
       throw error;
     }

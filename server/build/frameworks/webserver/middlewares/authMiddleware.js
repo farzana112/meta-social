@@ -24,6 +24,7 @@ const userAuthMiddleware = (req, res, next) => {
         next();
     }
     catch (err) {
+        console.log(err);
         throw new appError_1.default("UnAuthorized User", httpStatus_1.HttpStatus.UNAUTHORIZED);
     }
 };

@@ -15,7 +15,7 @@ const postRouter = () => {
     const router = express_1.default.Router();
     const controller = (0, postControllers_1.default)(postDbRepositoryInterface_1.postDbInterface, postRepository_1.postRepositoryImp, userDbRepository_1.userDbRepository, userRepository_1.userRepositoryMongoDB);
     router.post("/", multer_1.upload.array('picture', 4), controller.createPost);
-    router.get("/", authMiddleware_1.default, controller.getPosts);
+    router.get("/", controller.getPosts);
     router.get("/:userId", authMiddleware_1.default, controller.getUserPost);
     router.delete('/:id', controller.deletePost);
     router.put("/:postId", controller.editPost);
