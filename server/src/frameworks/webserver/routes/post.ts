@@ -13,7 +13,7 @@ const postRouter= () =>{
     const router=express.Router();
     const controller=postController(postDbInterface,postRepositoryImp,userDbRepository,userRepositoryMongoDB)
     router.post("/",upload.array('picture',4),controller.createPost);
-    router.get("/",controller.getPosts)
+    router.get("/",userAuthMiddleware,controller.getPosts)
     router.get("/:userId",userAuthMiddleware,controller.getUserPost)
     router.delete('/:id',controller.deletePost)
     router.put("/:postId",controller.editPost)

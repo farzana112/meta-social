@@ -17,6 +17,7 @@ const userAuthMiddleware = (req, res, next) => {
         throw new appError_1.default("Token not found", httpStatus_1.HttpStatus.UNAUTHORIZED);
     }
     try {
+        console.log(token);
         const { payload } = (0, authservices_1.authService)().verifyToken(token);
         console.log("payload");
         console.log(payload);
