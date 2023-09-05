@@ -26,10 +26,10 @@ const socketConfig = (
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 ) => {
     console.log("socket")
-  io.on("connection", (socket) => {
+  io.on("connection", (socket) => { 
     console.log(`user connected ${socket.id}`);
     socket.on("new-user-add", (newUserId) => {
-      console.log("new user added!")
+      console.log("new user added!!")
       // if user is not added previously
       if (!activeUsers.some((user) => user.userId === newUserId)) {
         activeUsers.push({ userId: newUserId, socketId: socket.id });

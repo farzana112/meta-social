@@ -15,8 +15,8 @@ const postRouter= () =>{
     router.post("/",upload.array('picture',4),controller.createPost);
     router.get("/",controller.getPosts)
     router.get("/:userId",userAuthMiddleware,controller.getUserPost)
-    router.delete('/:id',controller.deletePost)
-    router.put("/:postId",controller.editPost)
+    router.delete('/:id',postMiddleware,controller.deletePost)
+    router.put("/:postId",postMiddleware,controller.editPost)
     router.put("/:postId/comment",controller.commentPost)
     router.put("/:postId/commentDelete",controller.commentDelete)
     router.put('/:id/like',controller.likePost)

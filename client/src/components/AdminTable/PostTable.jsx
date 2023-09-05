@@ -160,7 +160,7 @@ const PostTable = () => {
       <TableCell>
         {post.report.map((report, index) => (
           <div key={index}>
-            <span>{report.userId}</span>
+            <span>{report.userId} </span>
           </div>
         ))}
       </TableCell>

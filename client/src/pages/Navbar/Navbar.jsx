@@ -111,7 +111,7 @@ const Navbar = ({ socket }) => {
   }, 500); // Adjust the debounce delay (in milliseconds) as needed
 
   const searchUser = (event) => {
-    const inputValue = event.target.value;
+    const inputValue = event.target.value 
     handleQueryChange(inputValue);
   };
 
@@ -252,7 +252,7 @@ const Navbar = ({ socket }) => {
                       },
                     }}
                   >
-                    Clear Notifications
+                    Clear Notifications  
                   </Button>
                 </div>
               </div>
